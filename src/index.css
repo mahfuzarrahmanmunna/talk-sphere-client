@@ -1,0 +1,14 @@
+/* here Font family cdn link */
+
+
+/* tailwind css and other ui import */
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* primary color #0D8CE4 */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #0D8CE4;
+  --color-secondary: teal;
+}
