@@ -2,122 +2,125 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { useState } from "react";
 import TalkSphereLogo from "../../../Components/TalkSphereLogo/TalkSphereLogo";
+import axios from "axios";
 
 const Register = () => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPass, setShowPass] = useState(false);
+    const [imageUploading, setImageUploading] = useState(false);
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         setLoading(true);
-        console.log("Registration Data:", data);
-        setTimeout(() => setLoading(false), 1500);
+        const imageFile = data.image[0];
+        const formData = new FormData();
+        formData.append("image", imageFile);
+
+        try {
+            setImageUploading(true);
+            const res = await axios.post(`https://api.imgbb.com/1/upload?key=f2f3f75de26957d089ecdb402788644c`, formData);
+            const imageUrl = res.data.data.url;
+
+            const userData = {
+                name: data.name,
+                email: data.email,
+                password: data.password,
+                image: imageUrl,
+            };
+
+            console.log("🟢 User Data:", userData);
+            // TODO: Send to your backend or Firebase
+
+        } catch (err) {
+            console.error("❌ Image upload failed", err);
+        } finally {
+            setImageUploading(false);
+            setLoading(false);
+        }
     };
 
     return (
-        <div
-            className="min-h-screen w-full flex items-center justify-center bg-cover bg-center relative px-4"
-            style={{
-                backgroundImage: `url('https://i.ibb.co/21mNM9qc/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product.jpg')`,
-            }}
+        <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-4 py-8"
+            style={{ backgroundImage: `url('https://i.ibb.co/21mNM9qc/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product.jpg')` }}
         >
-            {/* 🔗 Logo top-left */}
-            <Link to="/" className="absolute top-4 left-6 z-50">
-                <TalkSphereLogo />
-            </Link>
+            <div className="absolute top-4 left-4 z-10">
+                <Link to="/">
+                    <TalkSphereLogo />
+                </Link>
+            </div>
 
-            <div className="bg-white/80 shadow-lg backdrop-blur-sm rounded-xl max-w-6xl w-full flex flex-col md:flex-row overflow-hidden mt-20">
-                {/* 📋 Registration Form */}
-                <div className="md:w-1/2 p-8 bg-base-100">
-                    <h3 className="text-2xl font-bold text-center mb-6">📝 Create Your Account</h3>
+            <div className="w-full max-w-6xl mx-auto bg-white/80 shadow-xl rounded-xl backdrop-blur-sm overflow-hidden flex flex-col md:flex-row">
+                {/* Left Form */}
+                <div className="w-full md:w-1/2 p-6 sm:p-8 bg-base-100">
+                    <h3 className="text-2xl font-bold text-center mb-6">📝 Register to Talk Sphere</h3>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         <div>
                             <label className="label"><span className="label-text">Name</span></label>
-                            <input
-                                type="text"
-                                {...register("name", { required: "Name is required" })}
-                                placeholder="Enter your name"
-                                className="input input-bordered w-full"
-                            />
+                            <input type="text" {...register("name", { required: "Name is required" })} className="input input-bordered w-full" />
                             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                         </div>
 
                         <div>
                             <label className="label"><span className="label-text">Email</span></label>
-                            <input
-                                type="email"
-                                {...register("email", { required: "Email is required" })}
-                                placeholder="Enter your email"
-                                className="input input-bordered w-full"
-                            />
+                            <input type="email" {...register("email", { required: "Email is required" })} className="input input-bordered w-full" />
                             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                         </div>
 
                         <div>
-                            <label className="label"><span className="label-text">Image URL</span></label>
-                            <input
-                                type="url"
-                                {...register("photo", { required: "Image URL is required" })}
-                                placeholder="Enter image URL"
-                                className="input input-bordered w-full"
-                            />
-                            {errors.photo && <p className="text-red-500 text-sm mt-1">{errors.photo.message}</p>}
+                            <label className="label"><span className="label-text">Image</span></label>
+                            <input type="file" accept="image/*" {...register("image", { required: "Image is required" })} className="file-input file-input-bordered w-full" />
+                            {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>}
                         </div>
 
                         <div>
                             <label className="label"><span className="label-text">Password</span></label>
-                            <div className="relative">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    {...register("password", { required: "Password is required" })}
-                                    placeholder="Enter password"
-                                    className="input input-bordered w-full"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-2 text-sm text-blue-500"
-                                >
-                                    {showPassword ? "Hide" : "Show"}
-                                </button>
-                            </div>
+                            <input
+                                type={showPass ? "text" : "password"}
+                                {...register("password", { required: "Password is required" })}
+                                className="input input-bordered w-full"
+                            />
                             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                         </div>
 
                         <div>
                             <label className="label"><span className="label-text">Confirm Password</span></label>
                             <input
-                                type="password"
+                                type={showPass ? "text" : "password"}
                                 {...register("confirmPassword", {
                                     required: "Please confirm your password",
-                                    validate: (val) => val === watch("password") || "Passwords do not match"
+                                    validate: (value) => value === watch("password") || "Passwords do not match",
                                 })}
-                                placeholder="Confirm password"
                                 className="input input-bordered w-full"
                             />
                             {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
                         </div>
 
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading}>
-                            {loading ? "Creating..." : "Register"}
+                        <div className="text-right">
+                            <button type="button" onClick={() => setShowPass(!showPass)} className="btn btn-xs btn-outline mt-2">
+                                {showPass ? "🙈 Hide Password" : "👁️ Show Password"}
+                            </button>
+                        </div>
+
+                        <button className="btn btn-primary w-full mt-4" type="submit" disabled={loading || imageUploading}>
+                            {loading || imageUploading ? "Submitting..." : "Register"}
                         </button>
                     </form>
 
-                    <p className="mt-4 text-center">
-                        Already have an account?{' '}
+                    <p className="mt-4 text-center text-sm">
+                        Already have an account?{" "}
                         <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
                     </p>
                 </div>
 
-                {/* ℹ️ Right Side Info */}
+                {/* Right Content Section */}
                 <div className="md:w-1/2 p-10 flex flex-col justify-center text-center md:text-left">
                     <div className="mb-6">
                         <TalkSphereLogo />
                     </div>
-                    <h2 className="text-3xl font-bold text-primary mb-4">Join Talk Sphere Today!</h2>
+                    <h2 className="text-3xl font-bold text-primary mb-4">Join the Talk Sphere Community!</h2>
                     <p className="text-base text-gray-700 leading-relaxed">
-                        Create your account and start sharing your thoughts. Talk Sphere is your space to connect, post, comment, and grow your digital presence.
+                        Share your thoughts, explore new ideas, and connect with people around the world. Let's talk, together.
                     </p>
                 </div>
             </div>

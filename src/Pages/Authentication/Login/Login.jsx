@@ -20,7 +20,7 @@ const Login = () => {
 
     return (
         <div
-            className="min-h-screen w-full flex items-center justify-center bg-cover bg-center relative px-4"
+            className="min-h-screen w-full py-12 flex items-center justify-center bg-cover bg-center relative px-4"
             style={{
                 backgroundImage: `url('https://i.ibb.co/21mNM9qc/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product.jpg')`,
             }}

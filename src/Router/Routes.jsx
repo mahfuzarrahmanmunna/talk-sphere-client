@@ -10,15 +10,14 @@ export const router = createBrowserRouter([
         element: <RootLayouts />, // Main layout (with navbar/footer)
         children: [
             {
-                index: true,
+                path: '/',
                 element: <Home />
             },
             {
-                path: "add-post",
-                element: (
-                    // Add PrivateRoute wrapper later if needed
-                    <AddPost />
-                )
+                // path: "add-post",
+                // element: (
+                //     <AddPost />
+                // )
             }
         ]
     },

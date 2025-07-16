@@ -1,12 +1,20 @@
-import React from 'react';
-import Navbar from '../../Components/Navbar/Navbar';
-import { Outlet } from 'react-router';
+import React from "react";
+import Navbar from "../../Components/Navbar/Navbar";
+import { Outlet } from "react-router";
 
 const RootLayouts = () => {
     return (
-        <div>
+        <div className="min-h-screen flex flex-col bg-base-100">
+            {/* 🧭 Navbar at top */}
             <Navbar />
-            <Outlet />
+
+            {/* 📦 Page content */}
+            <main className="flex-1 px-4 py-6">
+                <Outlet />
+            </main>
+
+            {/* 🔻 Optional Footer */}
+            {/* <Footer /> */}
         </div>
     );
 };
