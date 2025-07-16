@@ -1,14 +1,19 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useState } from "react";
 import TalkSphereLogo from "../../../Components/TalkSphereLogo/TalkSphereLogo";
 import axios from "axios";
+import useAuth from "../../../Hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [imageUploading, setImageUploading] = useState(false);
+    const { createUser, updateUser, setUser } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -17,22 +22,58 @@ const Register = () => {
         formData.append("image", imageFile);
 
         try {
+            // Upload to imgbb
             setImageUploading(true);
-            const res = await axios.post(`https://api.imgbb.com/1/upload?key=f2f3f75de26957d089ecdb402788644c`, formData);
-            const imageUrl = res.data.data.url;
+             const imgRes = await axios.post(
+                `https://api.imgbb.com/1/upload?key=f2f3f75de26957d089ecdb402788644c`,
+                formData
+            );
+            const imageUrl = imgRes.data.data.url;
 
-            const userData = {
+            // Create Firebase user
+            const userCredential = await createUser(data.email, data.password);
+            const firebaseUser = userCredential.user;
+
+            // Update Firebase profile
+            await updateUser({
+                displayName: data.name,
+                photoURL: imageUrl,
+            });
+
+            // Update local state
+            setUser({
+                ...firebaseUser,
+                displayName: data.name,
+                photoURL: imageUrl,
+            });
+
+            // Save user in DB
+            const savedUser = {
                 name: data.name,
                 email: data.email,
-                password: data.password,
                 image: imageUrl,
+                badge: "Bronze",
+                role: "user",
+                isMember: false,
             };
+            await axios.post("http://localhost:3000/users", savedUser);
 
-            console.log("🟢 User Data:", userData);
-            // TODO: Send to your backend or Firebase
+            // Success
+            Swal.fire({
+                icon: "success",
+                title: "Account created successfully!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            navigate(location.state?.from || "/");
 
         } catch (err) {
-            console.error("❌ Image upload failed", err);
+            console.error("Registration error:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Registration Failed",
+                text: err.message,
+            });
         } finally {
             setImageUploading(false);
             setLoading(false);
@@ -40,8 +81,11 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-4 py-8"
-            style={{ backgroundImage: `url('https://i.ibb.co/21mNM9qc/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product.jpg')` }}
+        <div
+            className="min-h-screen w-full flex items-center justify-center bg-cover bg-center px-4 py-8"
+            style={{
+                backgroundImage: `url('https://i.ibb.co/21mNM9qc/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product.jpg')`,
+            }}
         >
             <div className="absolute top-4 left-4 z-10">
                 <Link to="/">
@@ -89,7 +133,8 @@ const Register = () => {
                                 type={showPass ? "text" : "password"}
                                 {...register("confirmPassword", {
                                     required: "Please confirm your password",
-                                    validate: (value) => value === watch("password") || "Passwords do not match",
+                                    validate: (value) =>
+                                        value === watch("password") || "Passwords do not match",
                                 })}
                                 className="input input-bordered w-full"
                             />
@@ -97,7 +142,11 @@ const Register = () => {
                         </div>
 
                         <div className="text-right">
-                            <button type="button" onClick={() => setShowPass(!showPass)} className="btn btn-xs btn-outline mt-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowPass(!showPass)}
+                                className="btn btn-xs btn-outline mt-2"
+                            >
                                 {showPass ? "🙈 Hide Password" : "👁️ Show Password"}
                             </button>
                         </div>
@@ -113,7 +162,7 @@ const Register = () => {
                     </p>
                 </div>
 
-                {/* Right Content Section */}
+                {/* Right Info */}
                 <div className="md:w-1/2 p-10 flex flex-col justify-center text-center md:text-left">
                     <div className="mb-6">
                         <TalkSphereLogo />

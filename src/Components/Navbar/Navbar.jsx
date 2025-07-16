@@ -1,42 +1,106 @@
 import React from 'react';
-import { NavLink } from 'react-router'; 
+import { NavLink } from 'react-router'; // ✅ react-router-dom
 import { FaBars } from 'react-icons/fa';
+import TalkSphereLogo from '../TalkSphereLogo/TalkSphereLogo';
+import useAuth from '../../Hooks/useAuth';
 
 const Navbar = () => {
-    const navLinks = [
-        { path: '/', label: 'Home' },
-        { path: '/membership', label: 'Membership' },
-        { path: '/dashboard/profile', label: 'Dashboard' },
-        { path: '/post-forum', label: 'Add Post' },
-        { path: '/login', label: 'Join Us' },
-    ];
+    const { user, logout } = useAuth();
+
+
+
+    const links = <>
+        <li >
+            <NavLink
+                to='/'
+                className={({ isActive }) =>
+                    isActive ? 'text-primary font-semibold' : ''
+                }
+            >
+                Home
+            </NavLink>
+        </li>
+    </>
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+        } catch (err) {
+            console.error("Logout error:", err);
+        }
+    };
 
     return (
-        <div className="navbar z-50 sticky top-0 px-4 py-3 border-b border-base-300 shadow-sm justify-between bg-base-100">
-            <NavLink to="/" className="text-xl font-bold text-primary">TalkSphere</NavLink>
-
-            {/* Desktop nav */}
-            <div className="hidden lg:flex gap-6 items-center">
-                {navLinks.map(link => (
-                    <NavLink
-                        key={link.path}
-                        to={link.path}
-                        className={({ isActive }) =>
-                            isActive
-                                ? 'text-primary font-semibold border-b-2 border-primary'
-                                : 'text-base-content hover:text-primary'
-                        }
+        <div className="navbar bg-base-100 sticky top-0 z-50 shadow-sm px-4 py-3">
+            {/* Start: Logo + Mobile Menu */}
+            <div className="navbar-start">
+                {/* Hamburger dropdown */}
+                <div className="dropdown">
+                    <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+                        <FaBars className="h-5 w-5" />
+                    </div>
+                    <ul
+                        tabIndex={0}
+                        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-1"
                     >
-                        {link.label}
-                    </NavLink>
-                ))}
+                        {links}
+                        {user && (
+                            <>
+                                <li><NavLink to="/dashboard/profile">Dashboard</NavLink></li>
+                                <li><button onClick={handleLogout}>Logout</button></li>
+                            </>
+                        )}
+                    </ul>
+                </div>
+
+                {/* Logo */}
+                <NavLink to="/" className="">
+                    <TalkSphereLogo />
+                </NavLink>
             </div>
 
-            {/* Mobile drawer toggle */}
-            <div className="lg:hidden">
-                <label htmlFor="mobile-drawer" className="btn btn-ghost btn-square">
-                    <FaBars className="h-5 w-5" />
-                </label>
+            {/* Center nav links for lg+ */}
+            {/* Right side nav links for lg+ */}
+            <div className="navbar-end hidden lg:flex items-center space-x-4">
+                <ul className="menu menu-horizontal px-1 space-x-4">
+                    {links}
+                </ul>
+
+                {/* Show avatar dropdown on small screens too */}
+
+                {user ? (
+                    <div className="dropdown dropdown-end ml-2">
+                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                            <div className="w-9 rounded-full">
+                                <img
+                                    src={user.photoURL || "https://i.ibb.co/ZYW3VTp/brown-brim.png"}
+                                    alt="user"
+                                />
+                            </div>
+                        </div>
+                        <ul
+                            tabIndex={0}
+                            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                        >
+                            <li className="text-base-content font-semibold pointer-events-none px-2">
+                                {user.displayName}
+                            </li>
+                            <li><NavLink to="/dashboard">Dashboard</NavLink></li>
+                            <li><button onClick={handleLogout}>Logout</button></li>
+                        </ul>
+                    </div>
+                ) : (
+                    <NavLink
+                        to='/login'
+                        className={({ isActive }) =>
+                            isActive ? 'text-primary font-semibold' : ''
+                        }
+                    >
+                        Join us
+                    </NavLink>
+                )}
+
+
             </div>
         </div>
     );
