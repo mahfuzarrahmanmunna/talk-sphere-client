@@ -1,15 +1,14 @@
 import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
-import useAuth from '../../Hooks/useAuth';
+// import useAuth from '../../Hooks/useAuth';
 import TalkSphereLogo from '../../Components/TalkSphereLogo/TalkSphereLogo';
-import { BackpackIcon } from 'lucide-react';
 import { BiLeftArrow } from 'react-icons/bi';
 
 const DashboardLayouts = () => {
-    const { user } = useAuth();
+    // const { user } = useAuth();
 
     const navItems = [
-        { to: '/dashboard/profile', label: 'My Profile' },
+        { to: '/dashboard/my-profile', label: 'My Profile' },
         { to: '/dashboard/add-post', label: 'Add Post' },
         { to: '/dashboard/my-posts', label: 'My Posts' },
     ];

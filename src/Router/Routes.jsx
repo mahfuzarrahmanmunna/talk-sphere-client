@@ -1,10 +1,12 @@
 import { createBrowserRouter } from "react-router";
 import RootLayouts from "../Layouts/RootLayouts/RootLayouts";
 import Home from "../Pages/Home/Home/Home";
-import AddPost from "../Pages/AddPost/AddPost";
+import AddPost from "../Pages/Dashboard/AddPost/AddPost";
 import Login from "../Pages/Authentication/Login/Login";
 import Register from "../Pages/Authentication/Register/Register";
 import DashboardLayouts from "../Layouts/DashboardLayouts/DashboardLayouts";
+import MyProfile from "../Pages/Dashboard/MyProfile/MyProfile";
+import MembershipPage from "../Pages/MembershipPage/MembershipPage";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -14,7 +16,12 @@ export const router = createBrowserRouter([
                 path: '/',
                 element: <Home />
             },
-
+            {
+                path: '/membership',
+                element: (
+                    <MembershipPage />
+                )
+            }
         ]
     },
     {
@@ -33,6 +40,12 @@ export const router = createBrowserRouter([
                 path: "add-post",
                 element: (
                     <AddPost />
+                )
+            },
+            {
+                path: 'my-profile',
+                element: (
+                    <MyProfile />
                 )
             }
         ]

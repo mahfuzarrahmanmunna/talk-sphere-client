@@ -20,6 +20,16 @@ const Navbar = () => {
                 Home
             </NavLink>
         </li>
+        <li >
+            <NavLink
+                to='/Membership'
+                className={({ isActive }) =>
+                    isActive ? 'text-primary font-semibold' : ''
+                }
+            >
+                Membership
+            </NavLink>
+        </li>
     </>
 
     const handleLogout = async () => {
