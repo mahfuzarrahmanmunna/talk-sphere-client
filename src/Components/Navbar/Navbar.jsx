@@ -1,68 +1,74 @@
 import React from 'react';
-import { NavLink, Outlet } from 'react-router'; // ✅ Use 'react-router-dom' instead of 'react-router'
-import { FaBars, FaBell } from 'react-icons/fa';
-import TalkSphereLogo from '../TalkSphereLogo/TalkSphereLogo';
+import { NavLink, Outlet } from 'react-router';
+import { FaBars } from 'react-icons/fa';
 
 const Navbar = () => {
-    const navLinks = (
-        <>
-            {['/', '/membership', '/dashboard/profile', '/join'].map((path, index) => {
-                const names = ['Home', 'Membership', 'Dashboard', 'Join Us'];
-                return (
-                    <NavLink
-                        key={path}
-                        to={path}
-                        className={({ isActive }) =>
-                            isActive
-                                ? 'text-primary font-semibold border-b-2 border-primary transition'
-                                : 'text-base-content hover:text-primary transition'
-                        }
-                    >
-                        {names[index]}
-                    </NavLink>
-                );
-            })}
-        </>
-    );
+    const navLinks = [
+        { path: '/', label: 'Home' },
+        { path: '/membership', label: 'Membership' },
+        { path: '/dashboard/profile', label: 'Dashboard' },
+        { path: '/post-forum', label: 'Add Post' },
+        { path: '/login', label: 'Join Us' },
+    ];
 
     return (
         <div className="min-h-screen bg-base-100">
-            {/* Top Navbar */}
-            <div className="navbar px-4 py-3 border-b border-base-300 shadow-sm">
-                <div className="flex-1">
-                    <NavLink to="/" className="text-xl font-bold flex items-center gap-2">
-                        <TalkSphereLogo />
-                    </NavLink>
+            {/* Top navbar */}
+            <div className="navbar px-4 py-3 border-b border-base-300 shadow-sm justify-between">
+                <NavLink to="/" className="text-xl font-bold text-primary">TalkSphere</NavLink>
+
+                {/* Desktop nav */}
+                <div className="hidden lg:flex gap-6 items-center">
+                    {navLinks.map(link => (
+                        <NavLink
+                            key={link.path}
+                            to={link.path}
+                            className={({ isActive }) =>
+                                isActive
+                                    ? 'text-primary font-semibold border-b-2 border-primary'
+                                    : 'text-base-content hover:text-primary'
+                            }
+                        >
+                            {link.label}
+                        </NavLink>
+                    ))}
                 </div>
 
-                {/* Desktop Nav */}
-                <div className="hidden lg:flex items-center gap-6">{navLinks}</div>
-
-                {/* Notification + Drawer for Mobile */}
-                <div className="flex items-center gap-3 lg:hidden">
-                    <FaBell className="w-5 h-5 text-base-content hover:text-primary cursor-pointer" />
-                    <label htmlFor="dashboard-drawer" className="btn btn-ghost btn-square">
+                {/* Mobile drawer toggle */}
+                <div className="lg:hidden">
+                    <label htmlFor="mobile-drawer" className="btn btn-ghost btn-square">
                         <FaBars className="h-5 w-5" />
                     </label>
                 </div>
             </div>
 
-            {/* Mobile Drawer (Only shows on small devices) */}
-            <div className="drawer drawer-mobile lg:hidden">
-                <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content p-4">
+            {/* Drawer for mobile */}
+            <div className="drawer lg:hidden">
+                <input id="mobile-drawer" type="checkbox" className="drawer-toggle" />
+                <div className="drawer-content">
                     <Outlet />
                 </div>
-                <div className="drawer-side z-50">
-                    <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
-                    <ul className="menu p-4 w-64 bg-base-200 text-base-content space-y-3">
-                        {navLinks}
+                <div className="drawer-side z-40">
+                    <label htmlFor="mobile-drawer" className="drawer-overlay"></label>
+                    <ul className="menu p-4 w-64 min-h-screen bg-base-200 text-base-content space-y-3">
+                        {navLinks.map(link => (
+                            <li key={link.path}>
+                                <NavLink
+                                    to={link.path}
+                                    className={({ isActive }) =>
+                                        isActive ? 'text-primary font-semibold' : 'hover:text-primary'
+                                    }
+                                >
+                                    {link.label}
+                                </NavLink>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
 
-            {/* Main Content (desktop) */}
-            <div className="hidden lg:block p-4">
+            {/* Page content */}
+            <div className="hidden lg:block px-4 py-6">
                 <Outlet />
             </div>
         </div>

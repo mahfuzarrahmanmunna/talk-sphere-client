@@ -47,7 +47,7 @@ const Banner = () => {
     return (
         <div className="relative w-full">
             {/* Hero/Slider Section */}
-            <div className="relative h-[500px] w-full overflow-hidden">
+            <div className="relative h-[600px] w-full overflow-hidden">
                 <Swiper
                     modules={[Autoplay, EffectFade]}
                     autoplay={{ delay: 5000, disableOnInteraction: false }}
@@ -89,35 +89,38 @@ const Banner = () => {
             </div>
 
             {/* Result Section Below */}
-            <div className="bg-white px-4 py-12">
-                {isLoading ? (
-                    <p className="text-center">Loading posts...</p>
-                ) : queryTag && posts.length === 0 ? (
-                    <p className="text-center text-gray-500">
-                        No posts found for tag: <strong>{queryTag}</strong>
-                    </p>
-                ) : (
-                    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {posts.map(post => (
-                            <div key={post._id} className="card bg-base-100 shadow-md p-4 border">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <img src={post.authorImage} alt="author" className="w-10 h-10 rounded-full" />
-                                    <span className="font-semibold">{post.authorName}</span>
+            {queryTag && (
+                <div className="bg-white px-4 py-12">
+                    {isLoading ? (
+                        <p className="text-center">Loading posts...</p>
+                    ) : posts.length > 0 ? (
+                        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {posts.map(post => (
+                                <div key={post._id} className="card bg-base-100 shadow-md p-4 border">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <img src={post.authorImage} alt="author" className="w-10 h-10 rounded-full" />
+                                        <span className="font-semibold">{post.authorName}</span>
+                                    </div>
+                                    <h2 className="text-lg font-bold">{post.title}</h2>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        {new Date(post.createdAt).toLocaleString()}
+                                    </p>
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {post.tags.map((tag, i) => (
+                                            <span key={i} className="badge badge-outline">{tag}</span>
+                                        ))}
+                                    </div>
                                 </div>
-                                <h2 className="text-lg font-bold">{post.title}</h2>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    {new Date(post.createdAt).toLocaleString()}
-                                </p>
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                    {post.tags.map((tag, i) => (
-                                        <span key={i} className="badge badge-outline">{tag}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center text-gray-500 mt-4">
+                            No posts found for tag: <strong>{queryTag}</strong>
+                        </p>
+                    )}
+                </div>
+            )}
+
         </div>
     );
 };
