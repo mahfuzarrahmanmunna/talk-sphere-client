@@ -7,7 +7,7 @@ const MyProfile = () => {
     const { user } = useAuth();
     const [posts, setPosts] = useState([]);
     const [dbUser, setDbUser] = useState(null);
-
+    
     // Fetch user info from DB
     useEffect(() => {
         if (user?.email) {

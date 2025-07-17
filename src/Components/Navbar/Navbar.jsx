@@ -1,5 +1,4 @@
-import React from 'react';
-import { NavLink } from 'react-router'; // ✅ react-router-dom
+import { Link, NavLink } from 'react-router';
 import { FaBars } from 'react-icons/fa';
 import TalkSphereLogo from '../TalkSphereLogo/TalkSphereLogo';
 import useAuth from '../../Hooks/useAuth';
@@ -7,30 +6,30 @@ import useAuth from '../../Hooks/useAuth';
 const Navbar = () => {
     const { user, logout } = useAuth();
 
-
-
-    const links = <>
-        <li >
-            <NavLink
-                to='/'
-                className={({ isActive }) =>
-                    isActive ? 'text-primary font-semibold' : ''
-                }
-            >
-                Home
-            </NavLink>
-        </li>
-        <li >
-            <NavLink
-                to='/Membership'
-                className={({ isActive }) =>
-                    isActive ? 'text-primary font-semibold' : ''
-                }
-            >
-                Membership
-            </NavLink>
-        </li>
-    </>
+    const links = (
+        <>
+            <li>
+                <NavLink
+                    to="/"
+                    className={({ isActive }) =>
+                        isActive ? 'text-primary font-semibold' : ''
+                    }
+                >
+                    Home
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    to="/Membership"
+                    className={({ isActive }) =>
+                        isActive ? 'text-primary font-semibold' : ''
+                    }
+                >
+                    Membership
+                </NavLink>
+            </li>
+        </>
+    );
 
     const handleLogout = async () => {
         try {
@@ -42,9 +41,9 @@ const Navbar = () => {
 
     return (
         <div className="navbar bg-base-100 sticky top-0 z-50 shadow-sm px-4 py-3">
-            {/* Start: Logo + Mobile Menu */}
+            {/* Left: Logo & Mobile Menu */}
             <div className="navbar-start">
-                {/* Hamburger dropdown */}
+                {/* Hamburger for mobile */}
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
                         <FaBars className="h-5 w-5" />
@@ -54,32 +53,26 @@ const Navbar = () => {
                         className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-1"
                     >
                         {links}
-                        {user && (
-                            <>
-                                <li><NavLink to="/dashboard/profile">Dashboard</NavLink></li>
-                                <li><button onClick={handleLogout}>Logout</button></li>
-                            </>
-                        )}
                     </ul>
                 </div>
 
                 {/* Logo */}
-                <NavLink to="/" className="">
+                <Link to="/">
                     <TalkSphereLogo />
-                </NavLink>
+                </Link>
             </div>
 
-            {/* Center nav links for lg+ */}
-            {/* Right side nav links for lg+ */}
-            <div className="navbar-end hidden lg:flex items-center space-x-4">
+            {/* Centered nav links on md+ */}
+            <div className="navbar-center hidden md:flex">
                 <ul className="menu menu-horizontal px-1 space-x-4">
                     {links}
                 </ul>
+            </div>
 
-                {/* Show avatar dropdown on small screens too */}
-
+            {/* Right: Avatar or Join us (Always visible) */}
+            <div className="navbar-end flex items-center space-x-4">
                 {user ? (
-                    <div className="dropdown dropdown-end ml-2">
+                    <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                             <div className="w-9 rounded-full">
                                 <img
@@ -101,7 +94,7 @@ const Navbar = () => {
                     </div>
                 ) : (
                     <NavLink
-                        to='/login'
+                        to="/login"
                         className={({ isActive }) =>
                             isActive ? 'text-primary font-semibold' : ''
                         }
@@ -109,8 +102,6 @@ const Navbar = () => {
                         Join us
                     </NavLink>
                 )}
-
-
             </div>
         </div>
     );

@@ -10,15 +10,19 @@ const Banner = () => {
     const [searchTag, setSearchTag] = useState('');
     const [queryTag, setQueryTag] = useState(null);
 
+    // Fetch posts by tag
     const { data: posts = [], isLoading } = useQuery({
         queryKey: ['searchPosts', queryTag],
         enabled: !!queryTag,
         queryFn: async () => {
-            const res = await axios.get(`https://your-server.com/posts/search?tag=${queryTag}`);
+            const res = await axios.get(
+                `https://your-server.com/posts/search?tag=${queryTag}`
+            );
             return res.data;
         },
     });
 
+    // Form submit handler
     const handleSubmit = (e) => {
         e.preventDefault();
         if (searchTag.trim()) {
@@ -26,6 +30,7 @@ const Banner = () => {
         }
     };
 
+    // Banner slides
     const banners = [
         {
             img: 'https://i.ibb.co/99dp2YFw/pexels-jibarofoto-2774556.jpg',
@@ -46,7 +51,7 @@ const Banner = () => {
 
     return (
         <div className="relative w-full">
-            {/* Hero/Slider Section */}
+            {/* Hero Slider */}
             <div className="relative h-[600px] w-full overflow-hidden">
                 <Swiper
                     modules={[Autoplay, EffectFade]}
@@ -63,12 +68,11 @@ const Banner = () => {
                                     alt={`banner-${i}`}
                                     className="w-full h-full object-cover brightness-[.4]"
                                 />
-                                {/* Overlay Content */}
                                 <div className="absolute inset-0 flex flex-col justify-center items-center px-4 text-white text-center">
-                                    <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
-                                        {banner.title}
-                                    </h1>
+                                    <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">{banner.title}</h1>
                                     <p className="text-xl mb-8 drop-shadow-lg">{banner.subtitle}</p>
+
+                                    {/* Search Bar */}
                                     <form onSubmit={handleSubmit} className="max-w-xl w-full flex gap-4">
                                         <input
                                             type="text"
@@ -88,11 +92,11 @@ const Banner = () => {
                 </Swiper>
             </div>
 
-            {/* Result Section Below */}
+            {/* Search Results */}
             {queryTag && (
                 <div className="bg-white px-4 py-12">
                     {isLoading ? (
-                        <p className="text-center">Loading posts...</p>
+                        <p className="text-center text-lg">Loading posts...</p>
                     ) : posts.length > 0 ? (
                         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {posts.map(post => (
@@ -120,7 +124,6 @@ const Banner = () => {
                     )}
                 </div>
             )}
-
         </div>
     );
 };

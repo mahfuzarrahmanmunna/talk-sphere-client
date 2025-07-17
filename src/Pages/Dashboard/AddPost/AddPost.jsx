@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import axios from 'axios';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import useAuth from '../../../Hooks/useAuth';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const AddPost = () => {
     const navigate = useNavigate();
     const [userPostCount, setUserPostCount] = useState(0);
     const [tagOptions, setTagOptions] = useState([]);
-    const { user, loading } = useAuth()
-    console.log(user?.photoURL);
+    const { user, loading } = useAuth();
+    const axiosSecure = useAxiosSecure();
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
+        control,
         formState: { errors }
     } = useForm();
 
-    // 🔄 Get user's post count
+    // 🔄 Fetch user's post count
     useEffect(() => {
         if (user?.email) {
-            axios
-                .get(`http://localhost:3000/posts/count?email=${user.email}`)
+            axiosSecure
+                .get(`posts/count?email=${user.email}`)
                 .then(res => setUserPostCount(res.data.count))
                 .catch(err => console.error("Post count fetch error:", err));
         }
     }, [user?.email]);
 
-    // 🔄 Load tag options
+    // 🔄 Load available tags from backend
     useEffect(() => {
         axios.get('http://localhost:3000/tags')
             .then(res => {
@@ -43,31 +44,42 @@ const AddPost = () => {
             .catch(err => console.error("Tag fetch error:", err));
     }, []);
 
-    // ✅ Form submit handler
+    // ✅ Submit form handler
     const onSubmit = async (data) => {
+        const selectedTags = data.tags.map(tag => tag.value);
+
         const newPost = {
-            authorName: user.name,
+            authorName: user.displayName,
             authorEmail: user.email,
             authorImage: user.photoURL,
             title: data.title,
             description: data.description,
-            tags: data.tags.map(tag => tag.value),
+            tags: selectedTags,
             upVote: 0,
             downVote: 0,
             createdAt: new Date()
         };
 
         try {
-            await axios.post('http://localhost:3000/posts', newPost);
+            // Post the new post
+            await axiosSecure.post('posts', newPost);
             reset();
+
+            // Save new tags to DB if not already present
+            const existingTagValues = tagOptions.map(tag => tag.value);
+            const newTagValues = selectedTags.filter(tag => !existingTagValues.includes(tag));
+            if (newTagValues.length > 0) {
+                await axiosSecure.post('tags/bulk-create', { tags: newTagValues });
+            }
+
             navigate('/dashboard/my-posts');
         } catch (err) {
             console.error("Post submission failed:", err);
         }
     };
 
-    // 🧱 Restriction logic
-    if (userPostCount >= 5 && !user.isMember) {
+    // 🧱 Restrict free users to 5 posts
+    if (userPostCount >= 5 && !user?.isMember) {
         return (
             <div className="p-6 text-center bg-base-100 shadow rounded-lg max-w-xl mx-auto mt-10">
                 <h2 className="text-2xl font-bold mb-4 text-error">Post Limit Reached</h2>
@@ -83,7 +95,7 @@ const AddPost = () => {
     }
 
     if (loading) {
-        return <p>Loading</p>
+        return <p className="text-center mt-20">Loading...</p>;
     }
 
     return (
@@ -94,13 +106,13 @@ const AddPost = () => {
                 {/* Author Info (readonly) */}
                 <div className="flex items-center gap-4">
                     <img
-                        src={user.photoURL}
+                        src={user?.photoURL}
                         alt="author"
                         className="w-12 h-12 rounded-full object-cover border"
                     />
                     <div>
-                        <p className="text-lg font-semibold">{user.name}</p>
-                        <p className="text-sm text-gray-500">{user.email}</p>
+                        <p className="text-lg font-semibold">{user?.displayName}</p>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
                     </div>
                 </div>
 
@@ -126,18 +138,26 @@ const AddPost = () => {
                     {errors.description && <p className="text-red-500 mt-1">Description is required</p>}
                 </div>
 
-                {/* Tags */}
+                {/* Tags (select + create new) */}
                 <div>
-                    <Select
-                        options={tagOptions}
-                        isMulti
-                        placeholder="Select tags"
-                        onChange={(selected) => setValue('tags', selected)}
-                        className="react-select-container"
+                    <Controller
+                        name="tags"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                            <CreatableSelect
+                                {...field}
+                                options={tagOptions}
+                                isMulti
+                                placeholder="Select or create tags..."
+                                className="react-select-container"
+                            />
+                        )}
                     />
+                    {errors.tags && <p className="text-red-500 mt-1">Please select at least one tag</p>}
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit */}
                 <button type="submit" className="btn btn-primary w-full">
                     Submit Post
                 </button>

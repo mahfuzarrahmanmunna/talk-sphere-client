@@ -24,7 +24,7 @@ const Register = () => {
         try {
             // Upload to imgbb
             setImageUploading(true);
-             const imgRes = await axios.post(
+            const imgRes = await axios.post(
                 `https://api.imgbb.com/1/upload?key=f2f3f75de26957d089ecdb402788644c`,
                 formData
             );
@@ -33,6 +33,7 @@ const Register = () => {
             // Create Firebase user
             const userCredential = await createUser(data.email, data.password);
             const firebaseUser = userCredential.user;
+            console.log(firebaseUser);
 
             // Update Firebase profile
             await updateUser({

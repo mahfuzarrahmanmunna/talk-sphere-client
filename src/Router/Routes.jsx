@@ -7,6 +7,7 @@ import Register from "../Pages/Authentication/Register/Register";
 import DashboardLayouts from "../Layouts/DashboardLayouts/DashboardLayouts";
 import MyProfile from "../Pages/Dashboard/MyProfile/MyProfile";
 import MembershipPage from "../Pages/MembershipPage/MembershipPage";
+import MyPosts from "../Pages/Dashboard/MyPosts/MyPosts";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -14,7 +15,8 @@ export const router = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <Home />
+                element: <Home />,
+                loader: ({ params }) => fetch(`http://localhost:3000/posts/search?tag=${params.tag}`)
             },
             {
                 path: '/membership',
@@ -47,7 +49,13 @@ export const router = createBrowserRouter([
                 element: (
                     <MyProfile />
                 )
-            }
+            },
+            {
+                path: 'my-posts',
+                element: (
+                    <MyPosts />
+                )
+            },
         ]
     }
 ]);

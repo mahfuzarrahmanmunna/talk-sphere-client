@@ -1,11 +1,11 @@
-import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
-// import useAuth from '../../Hooks/useAuth';
 import TalkSphereLogo from '../../Components/TalkSphereLogo/TalkSphereLogo';
 import { BiLeftArrow } from 'react-icons/bi';
+import { HiDotsVertical } from 'react-icons/hi';
+import useAuth from '../../Hooks/useAuth';
 
 const DashboardLayouts = () => {
-    // const { user } = useAuth();
+    const { user } = useAuth();
 
     const navItems = [
         { to: '/dashboard/my-profile', label: 'My Profile' },
@@ -14,36 +14,63 @@ const DashboardLayouts = () => {
     ];
 
     return (
-        <div className="flex min-h-screen">
-            {/* Sidebar */}
-            <aside className="w-64 bg-base-200 shadow-lg  p-4">
-                <Link className="mb-6 flex items-center">
-                    <BiLeftArrow size={25} className='text-primary' />
-                    <TalkSphereLogo />
-                </Link>
+        <div className="drawer lg:drawer-open min-h-screen">
+            {/* Drawer Toggle Button (Small Devices) */}
+            <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
+            <div className="drawer-content flex flex-col">
+                {/* Small Device Navbar */}
+                <div className="lg:hidden w-full navbar bg-base-200 shadow-md px-4 justify-between">
+                    <Link to="/" className="flex items-center gap-2">
+                        <BiLeftArrow size={20} className="text-primary" />
+                        <TalkSphereLogo />
+                    </Link>
+                    <label htmlFor="dashboard-drawer" className="cursor-pointer">
+                        <HiDotsVertical size={24} />
+                    </label>
+                </div>
 
-                <ul className="space-y-2">
-                    {navItems.map(item => (
-                        <li key={item.to}>
-                            <NavLink
-                                to={item.to}
-                                className={({ isActive }) =>
-                                    isActive
-                                        ? 'block p-2 rounded bg-primary text-white font-medium'
-                                        : 'block p-2 rounded hover:bg-primary hover:text-white'
-                                }
-                            >
-                                {item.label}
-                            </NavLink>
-                        </li>
-                    ))}
-                </ul>
-            </aside>
+                {/* Page Content */}
+                <main className="p-6 bg-base-100 flex-1">
+                    <Outlet />
+                </main>
+            </div>
 
-            {/* Main Content */}
-            <main className="flex-1 p-6 bg-base-100">
-                <Outlet />
-            </main>
+            {/* Drawer Sidebar */}
+            <div className="drawer-side">
+                <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
+                <aside className="w-64 min-h-full bg-base-200 shadow-lg p-4">
+                    {/* Logo & Back to Home */}
+                    
+
+                    {/* User Info */}
+                    <div className="flex flex-col items-center mb-6">
+                        <img
+                            src={user?.photoURL}
+                            alt="Profile"
+                            className="w-16 h-16 rounded-full object-cover"
+                        />
+                        <h2 className="text-lg font-semibold mt-2">{user?.displayName}</h2>
+                    </div>
+
+                    {/* Navigation Items */}
+                    <ul className="space-y-2">
+                        {navItems.map(item => (
+                            <li key={item.to}>
+                                <NavLink
+                                    to={item.to}
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? 'block p-2 rounded bg-primary text-white font-medium'
+                                            : 'block p-2 rounded hover:bg-primary hover:text-white'
+                                    }
+                                >
+                                    {item.label}
+                                </NavLink>
+                            </li>
+                        ))}
+                    </ul>
+                </aside>
+            </div>
         </div>
     );
 };
