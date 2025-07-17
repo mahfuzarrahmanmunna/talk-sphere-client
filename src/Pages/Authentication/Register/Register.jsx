@@ -22,7 +22,7 @@ const Register = () => {
         formData.append("image", imageFile);
 
         try {
-            // Upload to imgbb
+            // Upload image
             setImageUploading(true);
             const imgRes = await axios.post(
                 `https://api.imgbb.com/1/upload?key=f2f3f75de26957d089ecdb402788644c`,
@@ -30,10 +30,8 @@ const Register = () => {
             );
             const imageUrl = imgRes.data.data.url;
 
-            // Create Firebase user
-            const userCredential = await createUser(data.email, data.password);
-            const firebaseUser = userCredential.user;
-            console.log(firebaseUser);
+            // Create user
+            await createUser(data.email, data.password);
 
             // Update Firebase profile
             await updateUser({
@@ -41,14 +39,14 @@ const Register = () => {
                 photoURL: imageUrl,
             });
 
-            // Update local state
-            setUser({
-                ...firebaseUser,
+            // Update local context
+            setUser((prevUser) => ({
+                ...prevUser,
                 displayName: data.name,
                 photoURL: imageUrl,
-            });
+            }));
 
-            // Save user in DB
+            // Save to DB
             const savedUser = {
                 name: data.name,
                 email: data.email,
@@ -59,13 +57,15 @@ const Register = () => {
             };
             await axios.post("http://localhost:3000/users", savedUser);
 
-            // Success
+            // Success message
             Swal.fire({
+                position: "center",
                 icon: "success",
                 title: "Account created successfully!",
                 showConfirmButton: false,
                 timer: 1500,
             });
+
             navigate(location.state?.from || "/");
 
         } catch (err) {
@@ -134,8 +134,7 @@ const Register = () => {
                                 type={showPass ? "text" : "password"}
                                 {...register("confirmPassword", {
                                     required: "Please confirm your password",
-                                    validate: (value) =>
-                                        value === watch("password") || "Passwords do not match",
+                                    validate: (value) => value === watch("password") || "Passwords do not match",
                                 })}
                                 className="input input-bordered w-full"
                             />
