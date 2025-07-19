@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router';
 import { FaArrowUp, FaArrowDown, FaComments } from 'react-icons/fa';
+import useAuth from '../../../Hooks/useAuth';
+import FallBack from '../../../Components/FallBack/FallBack';
 
 const POSTS_PER_PAGE = 12;
 
@@ -9,7 +11,9 @@ const AllPosts = () => {
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
-    const [sortBy, setSortBy] = useState("newest"); // or 'popularity'
+    const [sortBy, setSortBy] = useState("newest");
+
+    const { loading } = useAuth();
 
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
@@ -35,6 +39,10 @@ const AllPosts = () => {
         setSortBy(prev => prev === "newest" ? "popularity" : "newest");
         setPage(1); // Reset to first page when changing sort
     };
+
+    if (loading) {
+        return <FallBack />
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">

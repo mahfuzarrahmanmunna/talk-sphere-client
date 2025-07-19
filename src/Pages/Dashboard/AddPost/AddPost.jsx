@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import useAuth from '../../../Hooks/useAuth';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import FallBack from '../../../Components/FallBack/FallBack';
 
 const AddPost = () => {
     const navigate = useNavigate();
@@ -95,7 +96,7 @@ const AddPost = () => {
     }
 
     if (loading) {
-        return <p className="text-center mt-20">Loading...</p>;
+        return <FallBack />
     }
 
     return (
