@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
-const Banner = () => {
+const Banner = ({ queryTag, setQueryTag }) => {
     const [searchTag, setSearchTag] = useState('');
-    const [queryTag, setQueryTag] = useState(null);
+    const axiosSecure = useAxiosSecure();
 
     // Fetch posts by tag
     const { data: posts = [], isLoading } = useQuery({
         queryKey: ['searchPosts', queryTag],
         enabled: !!queryTag,
         queryFn: async () => {
-            const res = await axios.get(
-                `https://your-server.com/posts/search?tag=${queryTag}`
-            );
+            const res = await axiosSecure.get(`/tags/search?tag=${queryTag}`);
             return res.data;
         },
     });
 
-    // Form submit handler
+    // Handle search input
     const handleSubmit = (e) => {
         e.preventDefault();
         if (searchTag.trim()) {
@@ -30,7 +28,7 @@ const Banner = () => {
         }
     };
 
-    // Banner slides
+    // Static banners
     const banners = [
         {
             img: 'https://i.ibb.co/99dp2YFw/pexels-jibarofoto-2774556.jpg',
@@ -51,12 +49,12 @@ const Banner = () => {
 
     return (
         <div className="relative w-full">
-            {/* Hero Slider */}
+            {/* Banner Slider */}
             <div className="relative h-[600px] w-full overflow-hidden">
                 <Swiper
                     modules={[Autoplay, EffectFade]}
                     autoplay={{ delay: 5000, disableOnInteraction: false }}
-                    loop={true}
+                    loop
                     effect="fade"
                     className="w-full h-full"
                 >
@@ -72,7 +70,7 @@ const Banner = () => {
                                     <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">{banner.title}</h1>
                                     <p className="text-xl mb-8 drop-shadow-lg">{banner.subtitle}</p>
 
-                                    {/* Search Bar */}
+                                    {/* Search Form */}
                                     <form onSubmit={handleSubmit} className="max-w-xl w-full flex gap-4">
                                         <input
                                             type="text"
@@ -92,13 +90,17 @@ const Banner = () => {
                 </Swiper>
             </div>
 
-            {/* Search Results */}
+            {/* Tag Search Results */}
             {queryTag && (
                 <div className="bg-white px-4 py-12">
+                    <h2 className="text-xl font-semibold text-center mb-6">
+                        Results for tag: <span className="text-blue-600">#{queryTag}</span>
+                    </h2>
+
                     {isLoading ? (
                         <p className="text-center text-lg">Loading posts...</p>
                     ) : posts.length > 0 ? (
-                        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {posts.map(post => (
                                 <div key={post._id} className="card bg-base-100 shadow-md p-4 border">
                                     <div className="flex items-center gap-3 mb-2">
@@ -111,7 +113,7 @@ const Banner = () => {
                                     </p>
                                     <div className="mt-2 flex flex-wrap gap-2">
                                         {post.tags.map((tag, i) => (
-                                            <span key={i} className="badge badge-outline">{tag}</span>
+                                            <span key={i} className="badge badge-outline">#{tag}</span>
                                         ))}
                                     </div>
                                 </div>

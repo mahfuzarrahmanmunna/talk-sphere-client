@@ -45,7 +45,7 @@ const Navbar = () => {
             <div className="navbar-start">
                 {/* Hamburger for mobile */}
                 <div className="dropdown">
-                    <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+                    <div tabIndex={0} role="button" className="lg:hidden">
                         <FaBars className="h-5 w-5" />
                     </div>
                     <ul
