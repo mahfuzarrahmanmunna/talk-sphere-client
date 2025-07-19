@@ -84,14 +84,14 @@ const Navbar = () => {
             {/* Right: Notification + Avatar */}
             <div className="navbar-end flex items-center space-x-4">
                 {/* 🔔 Notification Bell */}
-
-                <Link to="/announcements" className="relative">
-                    <FaBell className="text-xl" />
-                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 rounded-full">
-                        {count}
-                    </span>
-                </Link>
-
+                {count > 0 && (
+                    <Link to="/announcements" className="relative">
+                        <FaBell className="text-xl" />
+                        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 rounded-full">
+                            {count}
+                        </span>
+                    </Link>
+                )}
 
                 {user ? (
                     <div className="dropdown dropdown-end">

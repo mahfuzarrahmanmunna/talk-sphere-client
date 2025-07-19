@@ -3,23 +3,25 @@ import axios from 'axios';
 import { Link } from 'react-router';
 import { FaArrowUp, FaArrowDown, FaComments } from 'react-icons/fa';
 
-const POSTS_PER_PAGE = 5;
+const POSTS_PER_PAGE = 12;
 
 const AllPosts = () => {
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
+    const [sortBy, setSortBy] = useState("newest"); // or 'popularity'
+
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
-
     useEffect(() => {
-        axios.get(`http://localhost:3000/paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}`)
+        axios.get(`http://localhost:3000/paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}&sortBy=${sortBy}`)
             .then(res => {
                 setPosts(res.data.posts);
                 setTotalPosts(res.data.total);
+                console.log(res.data.posts);
             })
             .catch(err => console.error('Error fetching paginated posts:', err));
-    }, [page]);
+    }, [page, sortBy]);
 
     const handlePrev = () => {
         if (page > 1) setPage(prev => prev - 1);
@@ -29,9 +31,19 @@ const AllPosts = () => {
         if (page < totalPages) setPage(prev => prev + 1);
     };
 
+    const handleSortToggle = () => {
+        setSortBy(prev => prev === "newest" ? "popularity" : "newest");
+        setPage(1); // Reset to first page when changing sort
+    };
+
     return (
         <div className="container mx-auto px-4 py-8">
-            <h2 className="text-3xl font-bold text-center mb-8">🔥 Popular Forum Posts</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="md:text-3xl text-2xl font-bold">🔥 Forum Posts</h2>
+                <button onClick={handleSortToggle} className="btn btn-sm btn-outline">
+                    Sort by: {sortBy === "newest" ? "Newest" : "Popularity"}
+                </button>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {posts.map((post) => (

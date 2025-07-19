@@ -9,6 +9,7 @@ import MyProfile from "../Pages/Dashboard/MyProfile/MyProfile";
 import MembershipPage from "../Pages/MembershipPage/MembershipPage";
 import MyPosts from "../Pages/Dashboard/MyPosts/MyPosts";
 import PostDetails from "../Pages/PostDetails/PostDetails";
+import MakeAnnouncement from "../Pages/MakeAnnouncement/MakeAnnouncement";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -18,6 +19,12 @@ export const router = createBrowserRouter([
                 path: '/',
                 element: <Home />,
                 loader: () => fetch(`http://localhost:3000/tags`)
+            },
+            {
+                path: 'announcements',
+                element: (
+                    <MakeAnnouncement />
+                )
             },
             {
                 path: '/membership',

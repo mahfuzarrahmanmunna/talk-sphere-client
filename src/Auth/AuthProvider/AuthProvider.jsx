@@ -6,12 +6,15 @@ import {
     signInWithEmailAndPassword,
     updateProfile,
     signOut,
+    signInWithPopup,
+    GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from "../../Firebase/firebase.init";
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const googleProvider = new GoogleAuthProvider();
     console.log(user);
 
     // Create user with email/password
@@ -24,6 +27,11 @@ const AuthProvider = ({ children }) => {
     const login = (email, password) => {
         setLoading(true);
         return signInWithEmailAndPassword(auth, email, password);
+    };
+
+    const loginWithGoogle = () => {
+        setLoading(true);
+        return signInWithPopup(auth, googleProvider);
     };
 
     // Update user profile (e.g. displayName, photoURL)
@@ -55,7 +63,8 @@ const AuthProvider = ({ children }) => {
         login,
         updateUser,
         logout,
-        setUser
+        setUser,
+        loginWithGoogle
     };
 
     return (

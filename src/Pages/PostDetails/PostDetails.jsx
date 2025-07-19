@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { FaRegThumbsUp, FaRegThumbsDown } from 'react-icons/fa';
-import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon } from 'react-share';
+import { FaRegThumbsUp, FaRegThumbsDown, FaComments } from 'react-icons/fa';
+import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, WhatsappShareButton, WhatsappIcon } from 'react-share';
 import useAuth from '../../Hooks/useAuth';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
@@ -33,54 +33,22 @@ const PostDetails = () => {
         enabled: !!id,
     });
 
-    // Upvote with optimistic update
+    // Upvote mutation
     const upvoteMutation = useMutation({
         mutationFn: async () => {
             await axiosSecure.patch(`upvote/posts/${id}`);
         },
-        onMutate: async () => {
-            await queryClient.cancelQueries(['postDetails', id]);
-            const previousPost = queryClient.getQueryData(['postDetails', id]);
-            if (previousPost) {
-                queryClient.setQueryData(['postDetails', id], {
-                    ...previousPost,
-                    upVote: (previousPost.upVote || 0) + 1,
-                });
-            }
-            return { previousPost };
-        },
-        onError: (_, __, context) => {
-            if (context?.previousPost) {
-                queryClient.setQueryData(['postDetails', id], context.previousPost);
-            }
-        },
-        onSettled: () => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['postDetails', id]);
         }
     });
 
-    // Downvote with optimistic update
+    // Downvote mutation
     const downvoteMutation = useMutation({
         mutationFn: async () => {
             await axiosSecure.patch(`downvote/posts/${id}`);
         },
-        onMutate: async () => {
-            await queryClient.cancelQueries(['postDetails', id]);
-            const previousPost = queryClient.getQueryData(['postDetails', id]);
-            if (previousPost) {
-                queryClient.setQueryData(['postDetails', id], {
-                    ...previousPost,
-                    downVote: (previousPost.downVote || 0) + 1,
-                });
-            }
-            return { previousPost };
-        },
-        onError: (_, __, context) => {
-            if (context?.previousPost) {
-                queryClient.setQueryData(['postDetails', id], context.previousPost);
-            }
-        },
-        onSettled: () => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['postDetails', id]);
         }
     });
@@ -118,7 +86,7 @@ const PostDetails = () => {
                 </div>
             </div>
 
-            <p className="text-gray-700 leading-relaxed mb-6">{post.content}</p>
+            <p className="text-gray-700 leading-relaxed mb-6">{post.description || post.content}</p>
 
             <div className="flex items-center gap-6 border-t pt-4">
                 <button onClick={() => upvoteMutation.mutate()} className="flex items-center gap-2 text-green-600">
@@ -127,6 +95,9 @@ const PostDetails = () => {
                 <button onClick={() => downvoteMutation.mutate()} className="flex items-center gap-2 text-red-500">
                     <FaRegThumbsDown /> <span>{post.downVote || 0}</span>
                 </button>
+                <span className="flex items-center gap-2 text-blue-600">
+                    <FaComments /> <span>{comments.length}</span>
+                </span>
 
                 <div className="ml-auto flex gap-3">
                     <FacebookShareButton url={window.location.href} quote={post.title}>
@@ -135,6 +106,9 @@ const PostDetails = () => {
                     <TwitterShareButton url={window.location.href} title={post.title}>
                         <TwitterIcon size={32} round />
                     </TwitterShareButton>
+                    <WhatsappShareButton url={window.location.href} title={post.title}>
+                        <WhatsappIcon size={32} round />
+                    </WhatsappShareButton>
                 </div>
             </div>
 

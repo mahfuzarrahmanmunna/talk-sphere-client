@@ -1,21 +1,37 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router"; // ✅ use 'react-router-dom'
+import { Link, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
-import { useState } from "react";
 import TalkSphereLogo from "../../../Components/TalkSphereLogo/TalkSphereLogo";
+import useAuth from "../../../Hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [loading, setLoading] = useState(false);
+    const { loading, login, loginWithGoogle } = useAuth();
+    const navigate = useNavigate();
 
-    const onSubmit = (data) => {
-        setLoading(true);
-        console.log("Login data:", data);
-        setTimeout(() => setLoading(false), 1500); // simulate loading
+    const onSubmit = async (data) => {
+        try {
+            const user = await login(data.email, data.password);
+            if (user) {
+                Swal.fire("Success!", "Logged in successfully!", "success");
+                navigate("/");
+            }
+        } catch (error) {
+            Swal.fire("Oops!", error.message || "Login failed", "error");
+        }
     };
 
-    const handleGoogleLogin = () => {
-        console.log("Login with Google");
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await loginWithGoogle();
+            if (result.user) {
+                Swal.fire("Welcome!", "Logged in with Google!", "success");
+                navigate("/");
+            }
+        } catch (error) {
+            Swal.fire("Oops!", error.message || "Google login failed", "error");
+        }
     };
 
     return (
@@ -25,13 +41,11 @@ const Login = () => {
                 backgroundImage: `url('https://i.ibb.co/21mNM9qc/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product.jpg')`,
             }}
         >
-            {/* 🔗 Logo at Top-Left Like Navbar */}
             <Link to="/" className="absolute top-4 left-6 z-50">
                 <TalkSphereLogo />
             </Link>
 
             <div className="bg-white/80 shadow-lg backdrop-blur-sm rounded-xl max-w-6xl w-full flex flex-col md:flex-row overflow-hidden mt-20">
-                {/* 📝 Left Intro Text */}
                 <div className="md:w-1/2 p-10 flex flex-col justify-center text-center md:text-left">
                     <h2 className="text-3xl font-bold text-primary mb-4">Welcome Back to Talk Sphere!</h2>
                     <p className="text-base text-gray-700 leading-relaxed">
@@ -39,7 +53,6 @@ const Login = () => {
                     </p>
                 </div>
 
-                {/* 🔐 Login Form */}
                 <div className="md:w-1/2 p-8 bg-base-100">
                     <h3 className="text-2xl font-bold text-center mb-6">🔐 Login to Your Account</h3>
 
@@ -81,8 +94,7 @@ const Login = () => {
                     </button>
 
                     <p className="mt-4 text-center">
-                        New to Talk Sphere?{" "}
-                        <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+                        New to Talk Sphere? <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
                     </p>
                 </div>
             </div>
