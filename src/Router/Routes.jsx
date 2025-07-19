@@ -10,6 +10,9 @@ import MembershipPage from "../Pages/MembershipPage/MembershipPage";
 import MyPosts from "../Pages/Dashboard/MyPosts/MyPosts";
 import PostDetails from "../Pages/PostDetails/PostDetails";
 import MakeAnnouncement from "../Pages/MakeAnnouncement/MakeAnnouncement";
+import PrivateRoutes from "../Routes/Private/PrivateRoutes";
+import CommentsPage from "../Pages/Dashboard/CommentsPage/CommentsPage";
+import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -23,19 +26,31 @@ export const router = createBrowserRouter([
             {
                 path: 'announcements',
                 element: (
-                    <MakeAnnouncement />
+                    <PrivateRoutes>
+                        <MakeAnnouncement />
+                    </PrivateRoutes>
                 )
             },
             {
                 path: '/membership',
                 element: (
-                    <MembershipPage />
+                    <PrivateRoutes>
+                        <MembershipPage />
+                    </PrivateRoutes>
                 )
             },
             {
                 path: 'post/:id',
                 element: (
                     <PostDetails />
+                )
+            },
+            {
+                path: 'comments/:postId',
+                element: (
+                    <PrivateRoutes>
+                        <CommentsPage />
+                    </PrivateRoutes>
                 )
             }
         ]
@@ -50,24 +65,40 @@ export const router = createBrowserRouter([
     },
     {
         path: '/dashboard',
-        element: <DashboardLayouts />,
+        element: (
+            <PrivateRoutes>
+                <DashboardLayouts />
+            </PrivateRoutes>
+        ),
         children: [
+            {
+                index: true,
+                element: <PrivateRoutes>
+                    <DashboardHome />
+                </PrivateRoutes>
+            },
             {
                 path: "add-post",
                 element: (
-                    <AddPost />
+                    <PrivateRoutes>
+                        <AddPost />
+                    </PrivateRoutes>
                 )
             },
             {
                 path: 'my-profile',
                 element: (
-                    <MyProfile />
+                    <PrivateRoutes>
+                        <MyProfile />
+                    </PrivateRoutes>
                 )
             },
             {
                 path: 'my-posts',
                 element: (
-                    <MyPosts />
+                    <PrivateRoutes>
+                        <MyPosts />
+                    </PrivateRoutes>
                 )
             },
         ]

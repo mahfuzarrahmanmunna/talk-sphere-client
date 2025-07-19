@@ -14,12 +14,13 @@ const DashboardLayouts = () => {
     ];
 
     return (
-        <div className="drawer lg:drawer-open min-h-screen">
-            {/* Drawer Toggle Button (Small Devices) */}
+        <div className="drawer lg:drawer-open min-h-screen bg-base-100">
             <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
+
+            {/* Main Content Area */}
             <div className="drawer-content flex flex-col">
-                {/* Small Device Navbar */}
-                <div className="lg:hidden w-full navbar bg-base-200 shadow-md px-4 justify-between">
+                {/* Mobile Navbar */}
+                <div className="lg:hidden navbar bg-base-200 shadow-md sticky top-0 px-4 justify-between">
                     <Link to="/" className="flex items-center gap-2">
                         <BiLeftArrow size={20} className="text-primary" />
                         <TalkSphereLogo />
@@ -29,46 +30,56 @@ const DashboardLayouts = () => {
                     </label>
                 </div>
 
-                {/* Page Content */}
-                <main className="p-6 bg-base-100 flex-1">
+                <main className="p-6">
                     <Outlet />
                 </main>
             </div>
 
-            {/* Drawer Sidebar */}
-            <div className="drawer-side">
+            {/* Sidebar */}
+            <div className="drawer-side z-40">
                 <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
-                <aside className="w-64 min-h-full bg-base-200 shadow-lg p-4">
-                    {/* Logo & Back to Home */}
-                    
+                <aside className="w-72 min-h-full bg-base-200 border-r shadow-md p-4 flex flex-col justify-between">
 
-                    {/* User Info */}
-                    <div className="flex flex-col items-center mb-6">
-                        <img
-                            src={user?.photoURL}
-                            alt="Profile"
-                            className="w-16 h-16 rounded-full object-cover"
-                        />
-                        <h2 className="text-lg font-semibold mt-2">{user?.displayName}</h2>
-                    </div>
+                    {/* Logo */}
+                    <div>
+                        <Link to="/" className="hidden lg:flex items-center gap-2 mb-6">
+                            <TalkSphereLogo />
+                        </Link>
 
-                    {/* Navigation Items */}
-                    <ul className="space-y-2">
-                        {navItems.map(item => (
-                            <li key={item.to}>
+                        {/* User Profile */}
+                        <div className="flex flex-col items-center text-center mb-8">
+                            <img
+                                src={user?.photoURL || '/default-avatar.png'}
+                                alt="Profile"
+                                className="w-20 h-20 rounded-full object-cover border-4 border-primary"
+                            />
+                            <h2 className="text-lg font-bold mt-3">{user?.displayName}</h2>
+                            <p className="text-sm text-gray-500">{user?.email}</p>
+                        </div>
+
+                        {/* Navigation Menu */}
+                        <nav className="space-y-2">
+                            {navItems.map(item => (
                                 <NavLink
+                                    key={item.to}
                                     to={item.to}
                                     className={({ isActive }) =>
-                                        isActive
-                                            ? 'block p-2 rounded bg-primary text-white font-medium'
-                                            : 'block p-2 rounded hover:bg-primary hover:text-white'
+                                        `block px-4 py-2 rounded transition duration-200 ${isActive
+                                            ? 'bg-primary text-white font-medium'
+                                            : 'hover:bg-primary hover:text-white text-gray-700'
+                                        }`
                                     }
                                 >
                                     {item.label}
                                 </NavLink>
-                            </li>
-                        ))}
-                    </ul>
+                            ))}
+                        </nav>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-10 text-center text-xs text-gray-400">
+                        © {new Date().getFullYear()} TalkSphere. All rights reserved.
+                    </div>
                 </aside>
             </div>
         </div>

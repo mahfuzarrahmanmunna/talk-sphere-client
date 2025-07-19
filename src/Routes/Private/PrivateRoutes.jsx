@@ -1,6 +1,6 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router';
 import useAuth from '../../Hooks/useAuth';
+import FallBack from '../../Components/FallBack/FallBack';
 
 const PrivateRoutes = ({ children }) => {
     const { user, loading } = useAuth();
@@ -8,9 +8,7 @@ const PrivateRoutes = ({ children }) => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <span className="loading loading-spinner text-primary"></span>
-            </div>
+            <FallBack />
         );
     }
 
