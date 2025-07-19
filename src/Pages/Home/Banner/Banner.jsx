@@ -5,6 +5,8 @@ import { Autoplay, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import PostCard from '../PostCard/PostCard';
+// import PostCard from '../../PostCard/PostCard';
 
 const Banner = ({ queryTag, setQueryTag }) => {
     const [searchTag, setSearchTag] = useState('');
@@ -20,12 +22,26 @@ const Banner = ({ queryTag, setQueryTag }) => {
         },
     });
 
+    // Fetch top 5 tags
+    const { data: tags = [] } = useQuery({
+        queryKey: ['topTags'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('/tags');
+            return res.data.slice(0, 5); // Limit to top 5
+        }
+    });
+
     // Handle search input
     const handleSubmit = (e) => {
         e.preventDefault();
         if (searchTag.trim()) {
             setQueryTag(searchTag.trim().toLowerCase());
         }
+    };
+
+    const handleTagClick = (tag) => {
+        setQueryTag(tag.toLowerCase());
+        setSearchTag(tag.toLowerCase());
     };
 
     // Static banners
@@ -83,6 +99,19 @@ const Banner = ({ queryTag, setQueryTag }) => {
                                             Search
                                         </button>
                                     </form>
+
+                                    {/* Clickable Tags */}
+                                    <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                                        {tags.map((tag, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => handleTagClick(tag.name)}
+                                                className="bg-white/80 text-blue-700 px-3 py-1 rounded-full text-sm hover:bg-blue-200"
+                                            >
+                                                #{tag.name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </SwiperSlide>
@@ -100,23 +129,9 @@ const Banner = ({ queryTag, setQueryTag }) => {
                     {isLoading ? (
                         <p className="text-center text-lg">Loading posts...</p>
                     ) : posts.length > 0 ? (
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {posts.map(post => (
-                                <div key={post._id} className="card bg-base-100 shadow-md p-4 border">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <img src={post.authorImage} alt="author" className="w-10 h-10 rounded-full" />
-                                        <span className="font-semibold">{post.authorName}</span>
-                                    </div>
-                                    <h2 className="text-lg font-bold">{post.title}</h2>
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        {new Date(post.createdAt).toLocaleString()}
-                                    </p>
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {post.tags.map((tag, i) => (
-                                            <span key={i} className="badge badge-outline">#{tag}</span>
-                                        ))}
-                                    </div>
-                                </div>
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {posts.map((post, index) => (
+                                <PostCard key={post._id} post={post} index={index} />
                             ))}
                         </div>
                     ) : (

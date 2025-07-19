@@ -1,10 +1,22 @@
 import { Link, NavLink } from 'react-router';
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaBell } from 'react-icons/fa';
 import TalkSphereLogo from '../TalkSphereLogo/TalkSphereLogo';
 import useAuth from '../../Hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
+    const axiosSecure = useAxiosSecure();
+
+    // Fetch announcement count
+    const { data: count = 0 } = useQuery({
+        queryKey: ['announcementCount'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('announcements/count');
+            return res.data.count;
+        }
+    });
 
     const links = (
         <>
@@ -69,8 +81,18 @@ const Navbar = () => {
                 </ul>
             </div>
 
-            {/* Right: Avatar or Join us (Always visible) */}
+            {/* Right: Notification + Avatar */}
             <div className="navbar-end flex items-center space-x-4">
+                {/* 🔔 Notification Bell */}
+
+                <Link to="/announcements" className="relative">
+                    <FaBell className="text-xl" />
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 rounded-full">
+                        {count}
+                    </span>
+                </Link>
+
+
                 {user ? (
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
