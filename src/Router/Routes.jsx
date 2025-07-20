@@ -13,6 +13,7 @@ import MakeAnnouncement from "../Pages/MakeAnnouncement/MakeAnnouncement";
 import PrivateRoutes from "../Routes/Private/PrivateRoutes";
 import CommentsPage from "../Pages/Dashboard/CommentsPage/CommentsPage";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
+import CommentReportPage from "../Pages/Dashboard/CommentReportPage/CommentReportPage";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -49,7 +50,7 @@ export const router = createBrowserRouter([
                 path: 'comments/:postId',
                 element: (
                     <PrivateRoutes>
-                        <CommentsPage />
+                        <CommentReportPage />
                     </PrivateRoutes>
                 )
             }

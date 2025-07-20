@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaMedal } from 'react-icons/fa';
 import useAuth from '../../../Hooks/useAuth';
+import FallBack from '../../../Components/FallBack/FallBack';
 
 const MyProfile = () => {
     const { user } = useAuth();
     const [posts, setPosts] = useState([]);
     const [dbUser, setDbUser] = useState(null);
+    const { loading } = useAuth();
 
     // Fetch user data from DB
     useEffect(() => {
@@ -38,6 +40,10 @@ const MyProfile = () => {
             </div>
         );
     };
+
+    if (loading) {
+        return <FallBack />
+    }
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-md max-w-4xl mx-auto mt-10">
