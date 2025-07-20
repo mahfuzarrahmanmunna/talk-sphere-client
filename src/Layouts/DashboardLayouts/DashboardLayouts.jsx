@@ -3,14 +3,28 @@ import TalkSphereLogo from '../../Components/TalkSphereLogo/TalkSphereLogo';
 import { BiLeftArrow } from 'react-icons/bi';
 import { HiDotsVertical } from 'react-icons/hi';
 import useAuth from '../../Hooks/useAuth';
+import { useEffect } from 'react';
 
 const DashboardLayouts = () => {
     const { user } = useAuth();
 
-    const navItems = [
+    useEffect(() => {
+        // const 
+    },[])
+
+    // Define navigation items for user
+    const userNavItems = [
         { to: '/dashboard/my-profile', label: 'My Profile' },
         { to: '/dashboard/add-post', label: 'Add Post' },
         { to: '/dashboard/my-posts', label: 'My Posts' },
+    ];
+
+    // Define additional navigation items for admin
+    const adminNavItems = [
+        { to: '/dashboard/admin-profile', label: 'Admin Profile' },
+        { to: '/dashboard/manage-users', label: 'Manage Users' },
+        { to: '/dashboard/reported-comments', label: 'Reported Comments/Activities' },
+        { to: '/dashboard/make-announcement', label: 'Make Announcement' },
     ];
 
     return (
@@ -31,6 +45,7 @@ const DashboardLayouts = () => {
                 </div>
 
                 <main className="p-6">
+                    {/* Render Admin or User Dashboard based on user role */}
                     <Outlet />
                 </main>
             </div>
@@ -59,20 +74,39 @@ const DashboardLayouts = () => {
 
                         {/* Navigation Menu */}
                         <nav className="space-y-2">
-                            {navItems.map(item => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    className={({ isActive }) =>
-                                        `block px-4 py-2 rounded transition duration-200 ${isActive
-                                            ? 'bg-primary text-white font-medium'
-                                            : 'hover:bg-primary hover:text-white text-gray-700'
-                                        }`
-                                    }
-                                >
-                                    {item.label}
-                                </NavLink>
-                            ))}
+                            {user?.role === 'admin' ? (
+                                // If the user is an admin, show admin-specific links
+                                adminNavItems.map(item => (
+                                    <NavLink
+                                        key={item.to}
+                                        to={item.to}
+                                        className={({ isActive }) =>
+                                            `block px-4 py-2 rounded transition duration-200 ${isActive
+                                                ? 'bg-primary text-white font-medium'
+                                                : 'hover:bg-primary hover:text-white text-gray-700'
+                                            }`
+                                        }
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                ))
+                            ) : (
+                                // If the user is a regular user, show user-specific links
+                                userNavItems.map(item => (
+                                    <NavLink
+                                        key={item.to}
+                                        to={item.to}
+                                        className={({ isActive }) =>
+                                            `block px-4 py-2 rounded transition duration-200 ${isActive
+                                                ? 'bg-primary text-white font-medium'
+                                                : 'hover:bg-primary hover:text-white text-gray-700'
+                                            }`
+                                        }
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                ))
+                            )}
                         </nav>
                     </div>
 

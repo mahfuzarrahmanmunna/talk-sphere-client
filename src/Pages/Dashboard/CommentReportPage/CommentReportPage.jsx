@@ -12,31 +12,40 @@ const feedbackOptions = [
 const CommentReportPage = () => {
     const { postId } = useParams();
     const [comments, setComments] = useState([]);
-    const [selectedFeedback, setSelectedFeedback] = useState({});
-    const [reported, setReported] = useState({});
+    const [selectedFeedback, setSelectedFeedback] = useState({}); // Tracks feedback for each comment
+    const [reported, setReported] = useState({}); // Tracks reported status for each comment
     const [modalComment, setModalComment] = useState(null);
     const axiosSecure = useAxiosSecure();
+    console.log(comments);
 
+    // Fetch comments for the post
     useEffect(() => {
         axiosSecure.get(`comments/post/${postId}`)
             .then(res => setComments(res.data))
             .catch(err => console.error("Failed to load comments:", err));
     }, [postId]);
 
+    // Handle feedback change for each comment
     const handleFeedbackChange = (commentId, feedback) => {
         setSelectedFeedback(prev => ({ ...prev, [commentId]: feedback }));
     };
 
+    // Handle report action
     const handleReport = async (comment) => {
         try {
-            await axiosSecure.post(`reports`, {
+            const reportData = {
                 commentId: comment._id,
-                feedback: selectedFeedback[comment._id],
-                email: comment.email,
-                commentText: comment.comment,
-                postId: comment.postId,
+                feedback: selectedFeedback[comment._id], // User-selected feedback
+                reportedBy: comment.email,               // Commenter's email (assuming the commenter is the reporter)
+                commentText: comment.comment,           // Comment content
+                postId: comment.postId,                 // Post ID
                 reportedAt: new Date(),
-            });
+            };
+
+            // Send the report to the backend
+            await axiosSecure.post('reports', reportData);
+
+            // Update the reported status for the comment
             setReported(prev => ({ ...prev, [comment._id]: true }));
             Swal.fire('Reported!', 'Comment has been reported.', 'success');
         } catch (err) {
@@ -91,9 +100,7 @@ const CommentReportPage = () => {
                                     </td>
                                     <td>
                                         <button
-                                            disabled={
-                                                !selectedFeedback[comment._id] || reported[comment._id]
-                                            }
+                                            disabled={!selectedFeedback[comment._id] || reported[comment._id]}
                                             onClick={() => handleReport(comment)}
                                             className="btn btn-sm btn-error disabled:opacity-50"
                                         >
@@ -107,7 +114,7 @@ const CommentReportPage = () => {
                 </table>
             </div>
 
-            {/* Modal */}
+            {/* Modal to display the full comment */}
             {modalComment && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">

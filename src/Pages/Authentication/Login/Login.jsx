@@ -1,19 +1,33 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router"; // Ensure using 'react-router-dom'
 import { FcGoogle } from "react-icons/fc";
 import TalkSphereLogo from "../../../Components/TalkSphereLogo/TalkSphereLogo";
 import useAuth from "../../../Hooks/useAuth";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { loading, login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
+    const axiosSecure = useAxiosSecure();  // Axios hook to make secure API requests
 
     const onSubmit = async (data) => {
         try {
             const user = await login(data.email, data.password);
             if (user) {
+                // Check if user needs role or badge update
+                const userData = {
+                    email: data.email,
+                    role: "user",
+                    badge: "Bronze",
+                    isMember: false,
+                    updatedAt: new Date(),
+                };
+
+                // Send the updated data to backend (only if needed)
+                await axiosSecure.patch('/users', userData);
+
                 Swal.fire("Success!", "Logged in successfully!", "success");
                 navigate("/");
             }
@@ -24,8 +38,28 @@ const Login = () => {
 
     const handleGoogleLogin = async () => {
         try {
+            // Step 1: Log in the user with Google
             const result = await loginWithGoogle();
+
+            // Step 2: Check if the login was successful
             if (result.user) {
+                const { email, displayName, photoURL } = result.user;
+
+                // Step 3: Define the user's role and badge
+                const userRole = "user"; // Default role for normal users
+                const userBadge = "Bronze"; // Default badge for new users
+
+                // Step 4: Send the user data to the backend
+                await axiosSecure.post('/users', {
+                    email,
+                    displayName,
+                    photoURL,
+                    role: userRole,
+                    badge: userBadge,
+                    isMember: false // Setting initial member status to false
+                });
+
+                // Step 5: Show success message and navigate
                 Swal.fire("Welcome!", "Logged in with Google!", "success");
                 navigate("/");
             }
