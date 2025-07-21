@@ -14,6 +14,8 @@ import PrivateRoutes from "../Routes/Private/PrivateRoutes";
 import CommentsPage from "../Pages/Dashboard/CommentsPage/CommentsPage";
 import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 import CommentReportPage from "../Pages/Dashboard/CommentReportPage/CommentReportPage";
+import ManageUsers from "../Pages/Dashboard/Admin/ManageUsers/ManageUsers";
+import AdminRoutes from "../Routes/Admin/AdminRoutes";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -23,14 +25,6 @@ export const router = createBrowserRouter([
                 path: '/',
                 element: <Home />,
                 loader: () => fetch(`http://localhost:3000/tags`)
-            },
-            {
-                path: 'announcements',
-                element: (
-                    <PrivateRoutes>
-                        <MakeAnnouncement />
-                    </PrivateRoutes>
-                )
             },
             {
                 path: '/membership',
@@ -100,6 +94,22 @@ export const router = createBrowserRouter([
                     <PrivateRoutes>
                         <MyPosts />
                     </PrivateRoutes>
+                )
+            },
+            {
+                path: 'manage-users',
+                element: (
+                    <AdminRoutes>
+                        <ManageUsers />
+                    </AdminRoutes>
+                )
+            },
+            {
+                path: 'make-announcement',
+                element: (
+                    <AdminRoutes>
+                        <MakeAnnouncement />
+                    </AdminRoutes>
                 )
             },
         ]

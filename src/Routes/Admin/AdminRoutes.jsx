@@ -1,8 +1,8 @@
 import React from 'react';
 import { Navigate } from 'react-router';
-import useUserRole from '../../Hooks/useUserRole';
 import FallBack from '../../Components/FallBack/FallBack';
 import useAuth from '../../Hooks/useAuth';
+import useUserRole from '../../Hooks/useUserRole';
 
 const AdminRoutes = ({ children }) => {
     const { user, loading } = useAuth();

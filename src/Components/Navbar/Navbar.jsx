@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import { FaBars, FaBell } from 'react-icons/fa';
 import TalkSphereLogo from '../TalkSphereLogo/TalkSphereLogo';
@@ -9,7 +10,9 @@ const Navbar = () => {
     const { user, logout } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    // Fetch announcement count
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    // Fetch announcement count and announcements
     const { data: count = 0 } = useQuery({
         queryKey: ['announcementCount'],
         queryFn: async () => {
@@ -18,30 +21,17 @@ const Navbar = () => {
         }
     });
 
-    const links = (
-        <>
-            <li>
-                <NavLink
-                    to="/"
-                    className={({ isActive }) =>
-                        isActive ? 'text-primary font-semibold' : ''
-                    }
-                >
-                    Home
-                </NavLink>
-            </li>
-            <li>
-                <NavLink
-                    to="/Membership"
-                    className={({ isActive }) =>
-                        isActive ? 'text-primary font-semibold' : ''
-                    }
-                >
-                    Membership
-                </NavLink>
-            </li>
-        </>
-    );
+    const { data: announcements = [],} = useQuery({
+        queryKey: ['announcements'],
+        queryFn: async () => {
+            const res = await axiosSecure.get('announcements');
+            return res.data;
+        },
+        enabled: isDropdownOpen, // Fetch announcements when dropdown is open
+        onError: (err) => {
+            console.error('Error fetching announcements:', err);
+        }
+    });
 
     const handleLogout = async () => {
         try {
@@ -60,11 +50,9 @@ const Navbar = () => {
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
                         <FaBars className="h-5 w-5" />
                     </div>
-                    <ul
-                        tabIndex={0}
-                        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-1"
-                    >
-                        {links}
+                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-1">
+                        <li><NavLink to="/">Home</NavLink></li>
+                        <li><NavLink to="/Membership">Membership</NavLink></li>
                     </ul>
                 </div>
 
@@ -77,22 +65,50 @@ const Navbar = () => {
             {/* Centered nav links on md+ */}
             <div className="navbar-center hidden md:flex">
                 <ul className="menu menu-horizontal px-1 space-x-4">
-                    {links}
+                    <li><NavLink to="/">Home</NavLink></li>
+                    <li><NavLink to="/Membership">Membership</NavLink></li>
                 </ul>
             </div>
 
             {/* Right: Notification + Avatar */}
             <div className="navbar-end flex items-center space-x-4">
-                {/* 🔔 Notification Bell */}
+                {/* Notification Bell */}
                 {count > 0 && (
-                    <Link to="/announcements" className="relative">
-                        <FaBell className="text-xl" />
-                        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 rounded-full">
-                            {count}
-                        </span>
-                    </Link>
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="text-xl"
+                        >
+                            <FaBell />
+                            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs px-1 rounded-full">
+                                {count}
+                            </span>
+                        </button>
+
+                        {/* Dropdown */}
+                        {isDropdownOpen && (
+                            <div className="absolute right-0 mt-2 p-4 bg-white border shadow-lg rounded-lg w-72 max-h-96 overflow-y-auto">
+                                <h3 className="font-semibold text-lg">Announcements</h3>
+                                {announcements.length === 0 ? (
+                                    <p>No announcements available.</p>
+                                ) : (
+                                    <ul className="max-h-64 overflow-y-auto">
+                                        {/* Only display the first 5 notifications */}
+                                        {announcements.slice(0, ).map((announcement) => (
+                                            <li key={announcement._id} className="mb-2">
+                                                <strong>{announcement.title}</strong>
+                                                <p>{announcement.description}</p>
+                                                <span className="text-gray-500">By {announcement.authorName}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 )}
 
+                {/* User Avatar Dropdown */}
                 {user ? (
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
@@ -103,26 +119,14 @@ const Navbar = () => {
                                 />
                             </div>
                         </div>
-                        <ul
-                            tabIndex={0}
-                            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                        >
-                            <li className="text-base-content font-semibold pointer-events-none px-2">
-                                {user.displayName}
-                            </li>
+                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                            <li className="text-base-content font-semibold pointer-events-none px-2">{user.displayName}</li>
                             <li><NavLink to="/dashboard">Dashboard</NavLink></li>
                             <li><button onClick={handleLogout}>Logout</button></li>
                         </ul>
                     </div>
                 ) : (
-                    <NavLink
-                        to="/login"
-                        className={({ isActive }) =>
-                            isActive ? 'text-primary font-semibold' : ''
-                        }
-                    >
-                        Join us
-                    </NavLink>
+                    <NavLink to="/login" className={({ isActive }) => isActive ? 'text-primary font-semibold' : ''}>Join us</NavLink>
                 )}
             </div>
         </div>

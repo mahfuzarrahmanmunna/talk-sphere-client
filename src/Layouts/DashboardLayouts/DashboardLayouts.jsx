@@ -3,14 +3,12 @@ import TalkSphereLogo from '../../Components/TalkSphereLogo/TalkSphereLogo';
 import { BiLeftArrow } from 'react-icons/bi';
 import { HiDotsVertical } from 'react-icons/hi';
 import useAuth from '../../Hooks/useAuth';
-import { useEffect } from 'react';
+import useUserRole from '../../Hooks/useUserRole';
 
 const DashboardLayouts = () => {
     const { user } = useAuth();
+    const { role, loading } = useUserRole();
 
-    useEffect(() => {
-        // const 
-    },[])
 
     // Define navigation items for user
     const userNavItems = [
@@ -74,7 +72,7 @@ const DashboardLayouts = () => {
 
                         {/* Navigation Menu */}
                         <nav className="space-y-2">
-                            {user?.role === 'admin' ? (
+                            {!loading && role === 'admin' ? (
                                 // If the user is an admin, show admin-specific links
                                 adminNavItems.map(item => (
                                     <NavLink
