@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import FallBack from "../../../../Components/FallBack/FallBack";
 
 // Function to fetch reports
 const fetchReports = async (axiosSecure) => {
@@ -68,12 +69,12 @@ const ReportedActivitiesPage = () => {
                 deleteComment(axiosSecure, commentId)
             ]);
         },
-        onMutate: async ({ reportId, commentId }) => {
-            // Optimistic update
+        onMutate: async ({ reportId, }) => {
+            // Optimistic update - Remove the report and comment from the UI immediately
             await queryClient.cancelQueries(["reports"]);
             const previousReports = queryClient.getQueryData(["reports"]);
 
-            // Remove the report and comment optimistically
+            // Optimistically remove the deleted report and its associated comment
             queryClient.setQueryData(["reports"], (oldReports) =>
                 oldReports.filter((report) => report._id !== reportId)
             );
@@ -87,13 +88,33 @@ const ReportedActivitiesPage = () => {
         },
         onSuccess: () => {
             Swal.fire("Deleted!", "The post and its comment have been deleted.", "success");
-            queryClient.invalidateQueries(["reports"]);  // Refetch the reports data
+            // Refetch the reports after deletion to ensure data consistency
+            queryClient.invalidateQueries(["reports"]);
         }
     });
 
-    if (isLoading) return <div>Loading...</div>;
+    // Handle loading state
+    if (isLoading) return <FallBack />;
 
+    // Handle error state
     if (error) return <div>Error fetching reports: {error.message}</div>;
+
+    // Handle delete confirmation and proceed with deletion
+    const handleDelete = (reportId, commentId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will delete the post and the associated comment.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteMutation.mutate({ reportId, commentId });
+            }
+        });
+    };
 
     return (
         <div className="p-6">
@@ -137,7 +158,7 @@ const ReportedActivitiesPage = () => {
                                             Resolve
                                         </button>
                                         <button
-                                            onClick={() => deleteMutation.mutate({ reportId: report._id, commentId: report.commentId })}
+                                            onClick={() => handleDelete(report._id, report.commentId)}
                                             className="btn btn-danger btn-sm"
                                         >
                                             Delete Post

@@ -62,64 +62,72 @@ const CommentReportPage = () => {
     return (
         <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow-lg mt-10">
             <h2 className="text-3xl font-bold text-blue-600 mb-6">🗨️ Comments</h2>
-            <div className="overflow-x-auto">
-                <table className="table w-full">
-                    <thead className="bg-blue-100">
-                        <tr>
-                            <th>Email</th>
-                            <th>Comment</th>
-                            <th>Feedback</th>
-                            <th>Report</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {comments.map(comment => {
-                            const isLong = comment.comment.length > 20;
-                            return (
-                                <tr key={comment._id}>
-                                    <td>{comment.email}</td>
-                                    <td>
-                                        {isLong ? (
-                                            <>
-                                                {comment.comment.slice(0, 20)}...{' '}
-                                                <button
-                                                    className="text-blue-500 underline text-xs"
-                                                    onClick={() => setModalComment(comment.comment)}
+
+            {/* Default Message if No Comments are Available */}
+            {comments.length === 0 ? (
+                <div className="text-center text-lg font-semibold text-gray-600">
+                    No comments available for this post. Be the first one to leave a comment or report any inappropriate comments.
+                </div>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="table w-full">
+                        <thead className="bg-blue-100">
+                            <tr>
+                                <th>Email</th>
+                                <th>Comment</th>
+                                <th>Feedback</th>
+                                <th>Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {comments.map(comment => {
+                                const isLong = comment.comment.length > 20;
+                                return (
+                                    <tr key={comment._id}>
+                                        <td>{comment.email}</td>
+                                        <td>
+                                            {isLong ? (
+                                                <>
+                                                    {comment.comment.slice(0, 20)}...{' '}
+                                                    <button
+                                                        className="text-blue-500 underline text-xs"
+                                                        onClick={() => setModalComment(comment.comment)}
+                                                    >
+                                                        Read More
+                                                    </button>
+                                                </>
+                                            ) : comment.comment}
+                                        </td>
+                                        <td>
+                                            <div className="relative inline-block w-full">
+                                                <select
+                                                    className="select select-bordered w-full p-2 rounded-md"
+                                                    onChange={(e) => handleFeedbackChange(comment._id, e.target.value)}
+                                                    value={selectedFeedback[comment._id] || ''}
                                                 >
-                                                    Read More
-                                                </button>
-                                            </>
-                                        ) : comment.comment}
-                                    </td>
-                                    <td>
-                                        <div className="relative inline-block w-full">
-                                            <select
-                                                className="select select-bordered w-full p-2 rounded-md"
-                                                onChange={(e) => handleFeedbackChange(comment._id, e.target.value)}
-                                                value={selectedFeedback[comment._id] || ''}
+                                                    <option value="">Select</option>
+                                                    {feedbackOptions.map((option, idx) => (
+                                                        <option key={idx} value={option}>{option}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button
+                                                disabled={!selectedFeedback[comment._id] || reported[comment._id]}
+                                                onClick={() => handleReport(comment)}
+                                                className="btn btn-sm bg-red-600 text-white disabled:opacity-50 hover:bg-red-700"
                                             >
-                                                <option value="">Select</option>
-                                                {feedbackOptions.map((option, idx) => (
-                                                    <option key={idx} value={option}>{option}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button
-                                            disabled={!selectedFeedback[comment._id] || reported[comment._id]}
-                                            onClick={() => handleReport(comment)}
-                                            className="btn btn-sm bg-red-600 text-white disabled:opacity-50 hover:bg-red-700"
-                                        >
-                                            Report
-                                        </button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
+                                                Report
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* Modal to display the full comment */}
             {modalComment && (
