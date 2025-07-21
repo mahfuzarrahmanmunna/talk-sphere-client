@@ -1,70 +1,99 @@
-import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 
+// Function to fetch reports
+const fetchReports = async (axiosSecure) => {
+    const response = await axiosSecure.get('/reports');
+    return response.data;
+};
+
+// Function to resolve a report
+const resolveReport = async (axiosSecure, reportId) => {
+    await axiosSecure.patch(`/reports/${reportId}`, { status: "resolved" });
+};
+
+// Function to delete a report
+const deleteReport = async (axiosSecure, reportId) => {
+    await axiosSecure.delete(`/reports/${reportId}`);
+};
+
+// Function to delete a comment
+const deleteComment = async (axiosSecure, commentId) => {
+    await axiosSecure.delete(`/comments/${commentId}`);
+};
+
 const ReportedActivitiesPage = () => {
-    const [reports, setReports] = useState([]);
     const axiosSecure = useAxiosSecure();
+    const queryClient = useQueryClient();
 
-    // Fetch reported activities/comments
-    const fetchReports = async () => {
-        try {
-            const response = await axiosSecure.get('/reports');
-            setReports(response.data);
-        } catch (err) {
-            console.error("Error fetching reports", err);
+    // Fetch reports using TanStack Query's useQuery
+    const { data: reports = [], error, isLoading } = useQuery({
+        queryKey: ["reports"], // Query key as an array
+        queryFn: () => fetchReports(axiosSecure),
+        refetchOnWindowFocus: true, // Automatically refetch when the window is focused
+    });
+
+    // Mutation to resolve a report
+    const resolveMutation = useMutation({
+        mutationFn: (reportId) => resolveReport(axiosSecure, reportId),
+        onMutate: async (reportId) => {
+            // Optimistic update
+            await queryClient.cancelQueries(["reports"]);
+            const previousReports = queryClient.getQueryData(["reports"]);
+
+            queryClient.setQueryData(["reports"], (oldReports) =>
+                oldReports.map((report) =>
+                    report._id === reportId ? { ...report, status: "resolved" } : report
+                )
+            );
+            return { previousReports };
+        },
+        onError: (error, variables, context) => {
+            // Rollback to the previous state if error occurs
+            queryClient.setQueryData(["reports"], context.previousReports);
+            Swal.fire("Error", "Something went wrong while resolving the report!", "error");
+        },
+        onSuccess: () => {
+            Swal.fire("Resolved!", "The report has been marked as resolved.", "success");
+            queryClient.invalidateQueries(["reports"]);  // Refetch the reports data
+        },
+    });
+
+    // Mutation to delete a report and its associated comment
+    const deleteMutation = useMutation({
+        mutationFn: ({ reportId, commentId }) => {
+            return Promise.all([
+                deleteReport(axiosSecure, reportId),
+                deleteComment(axiosSecure, commentId)
+            ]);
+        },
+        onMutate: async ({ reportId, commentId }) => {
+            // Optimistic update
+            await queryClient.cancelQueries(["reports"]);
+            const previousReports = queryClient.getQueryData(["reports"]);
+
+            // Remove the report and comment optimistically
+            queryClient.setQueryData(["reports"], (oldReports) =>
+                oldReports.filter((report) => report._id !== reportId)
+            );
+
+            return { previousReports };
+        },
+        onError: (error, variables, context) => {
+            // Rollback if the deletion fails
+            queryClient.setQueryData(["reports"], context.previousReports);
+            Swal.fire("Error", "Something went wrong while deleting the report or comment!", "error");
+        },
+        onSuccess: () => {
+            Swal.fire("Deleted!", "The post and its comment have been deleted.", "success");
+            queryClient.invalidateQueries(["reports"]);  // Refetch the reports data
         }
-    };
+    });
 
-    useEffect(() => {
-        fetchReports();
-    }, []);
+    if (isLoading) return <div>Loading...</div>;
 
-    const handleResolveReport = async (reportId) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You are about to resolve this report.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, resolve it!",
-            cancelButtonText: "Cancel",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    // Mark the report as resolved by sending a request to the server
-                    await axiosSecure.patch(`/reports/${reportId}`, { status: "resolved" });
-                    Swal.fire("Resolved!", "The report has been marked as resolved.", "success");
-                    fetchReports();  // Refresh the list
-                } catch (error) {
-                    console.error("Error resolving report", error);
-                    Swal.fire("Error", "Something went wrong!", "error");
-                }
-            }
-        });
-    };
-
-    const handleDeletePost = async (postId) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You are about to delete this post permanently.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "Cancel",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    // Delete the post
-                    await axiosSecure.delete(`/posts/${postId}`);
-                    Swal.fire("Deleted!", "The post has been deleted.", "success");
-                    fetchReports();  // Refresh the reports list
-                } catch (error) {
-                    console.error("Error deleting post", error);
-                    Swal.fire("Error", "Something went wrong!", "error");
-                }
-            }
-        });
-    };
+    if (error) return <div>Error fetching reports: {error.message}</div>;
 
     return (
         <div className="p-6">
@@ -91,10 +120,10 @@ const ReportedActivitiesPage = () => {
                         ) : (
                             reports.map((report) => (
                                 <tr key={report._id}>
-                                    <td>{report.reportedBy}</td>
-                                    <td>{report.type}</td>
-                                    <td>{report.postTitle}</td>
-                                    <td>{report.comment}</td>
+                                    <td>{report.reportedBy || "Unknown"}</td>
+                                    <td>{report.feedback || "Not provided"}</td>
+                                    <td>{report.postTitle || "No title"}</td>
+                                    <td>{report.commentText || "No comment"}</td>
                                     <td>
                                         <span className={`badge ${report.status === "resolved" ? "bg-green-500" : "bg-yellow-500"}`}>
                                             {report.status}
@@ -102,13 +131,13 @@ const ReportedActivitiesPage = () => {
                                     </td>
                                     <td>
                                         <button
-                                            onClick={() => handleResolveReport(report._id)}
+                                            onClick={() => resolveMutation.mutate(report._id)}
                                             className="btn btn-primary btn-sm mr-2"
                                         >
                                             Resolve
                                         </button>
                                         <button
-                                            onClick={() => handleDeletePost(report.postId)}
+                                            onClick={() => deleteMutation.mutate({ reportId: report._id, commentId: report.commentId })}
                                             className="btn btn-danger btn-sm"
                                         >
                                             Delete Post

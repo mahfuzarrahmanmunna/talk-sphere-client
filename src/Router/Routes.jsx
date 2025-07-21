@@ -44,14 +44,7 @@ export const router = createBrowserRouter([
                     <PostDetails />
                 )
             },
-            {
-                path: 'comments/:postId',
-                element: (
-                    <PrivateRoutes>
-                        <CommentReportPage />
-                    </PrivateRoutes>
-                )
-            }
+
         ]
     },
     {
@@ -97,6 +90,14 @@ export const router = createBrowserRouter([
                 element: (
                     <PrivateRoutes>
                         <MyPosts />
+                    </PrivateRoutes>
+                )
+            },
+            {
+                path: 'comments/:postId',
+                element: (
+                    <PrivateRoutes>
+                        <CommentReportPage />
                     </PrivateRoutes>
                 )
             },

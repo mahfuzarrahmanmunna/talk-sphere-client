@@ -94,7 +94,7 @@ const MyPosts = () => {
                                     <td>
                                         <button
                                             className="btn btn-sm btn-info"
-                                            onClick={() => navigate(`/comments/${post._id}`)}
+                                            onClick={() => navigate(`/dashboard/comments/${post._id}`)}
                                         >
                                             View Comments
                                         </button>

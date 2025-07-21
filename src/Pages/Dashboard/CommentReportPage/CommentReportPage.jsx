@@ -15,11 +15,17 @@ const CommentReportPage = () => {
     const [selectedFeedback, setSelectedFeedback] = useState({}); // Tracks feedback for each comment
     const [reported, setReported] = useState({}); // Tracks reported status for each comment
     const [modalComment, setModalComment] = useState(null);
+    const [postTitle, setPostTitle] = useState(''); // To store post title
     const axiosSecure = useAxiosSecure();
-    console.log(comments);
 
-    // Fetch comments for the post
+    // Fetch the post title and comments for the post
     useEffect(() => {
+        // Fetch post title
+        axiosSecure.get(`/posts/${postId}`)
+            .then(res => setPostTitle(res.data.title))
+            .catch(err => console.error("Failed to load post title:", err));
+
+        // Fetch comments for the post
         axiosSecure.get(`comments/post/${postId}`)
             .then(res => setComments(res.data))
             .catch(err => console.error("Failed to load comments:", err));
@@ -35,17 +41,16 @@ const CommentReportPage = () => {
         try {
             const reportData = {
                 commentId: comment._id,
-                feedback: selectedFeedback[comment._id], // User-selected feedback
-                reportedBy: comment.email,               // Commenter's email (assuming the commenter is the reporter)
-                commentText: comment.comment,           // Comment content
-                postId: comment.postId,                 // Post ID
+                postId: comment.postId,
+                commentText: comment.comment,
+                feedback: selectedFeedback[comment._id],
+                reportedBy: comment.email,
+                postTitle: postTitle,  // Pass the fetched post title here
                 reportedAt: new Date(),
             };
+            console.log(reportData);
 
-            // Send the report to the backend
-            await axiosSecure.post('reports', reportData);
-
-            // Update the reported status for the comment
+            await axiosSecure.post('/reports', reportData);
             setReported(prev => ({ ...prev, [comment._id]: true }));
             Swal.fire('Reported!', 'Comment has been reported.', 'success');
         } catch (err) {
@@ -55,11 +60,11 @@ const CommentReportPage = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto p-6 bg-base-100 rounded shadow mt-10">
-            <h2 className="text-3xl font-bold text-primary mb-6">🗨️ Comments</h2>
+        <div className="max-w-7xl mx-auto p-6 bg-white rounded shadow-lg mt-10">
+            <h2 className="text-3xl font-bold text-blue-600 mb-6">🗨️ Comments</h2>
             <div className="overflow-x-auto">
                 <table className="table w-full">
-                    <thead>
+                    <thead className="bg-blue-100">
                         <tr>
                             <th>Email</th>
                             <th>Comment</th>
@@ -87,22 +92,24 @@ const CommentReportPage = () => {
                                         ) : comment.comment}
                                     </td>
                                     <td>
-                                        <select
-                                            className="select select-bordered select-sm"
-                                            onChange={(e) => handleFeedbackChange(comment._id, e.target.value)}
-                                            value={selectedFeedback[comment._id] || ''}
-                                        >
-                                            <option value="">Select</option>
-                                            {feedbackOptions.map((option, idx) => (
-                                                <option key={idx} value={option}>{option}</option>
-                                            ))}
-                                        </select>
+                                        <div className="relative inline-block w-full">
+                                            <select
+                                                className="select select-bordered w-full p-2 rounded-md"
+                                                onChange={(e) => handleFeedbackChange(comment._id, e.target.value)}
+                                                value={selectedFeedback[comment._id] || ''}
+                                            >
+                                                <option value="">Select</option>
+                                                {feedbackOptions.map((option, idx) => (
+                                                    <option key={idx} value={option}>{option}</option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </td>
                                     <td>
                                         <button
                                             disabled={!selectedFeedback[comment._id] || reported[comment._id]}
                                             onClick={() => handleReport(comment)}
-                                            className="btn btn-sm btn-error disabled:opacity-50"
+                                            className="btn btn-sm bg-red-600 text-white disabled:opacity-50 hover:bg-red-700"
                                         >
                                             Report
                                         </button>

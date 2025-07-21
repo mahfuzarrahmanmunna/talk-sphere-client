@@ -14,6 +14,7 @@ const DashboardLayouts = () => {
         { to: '/dashboard/my-profile', label: 'My Profile' },
         { to: '/dashboard/add-post', label: 'Add Post' },
         { to: '/dashboard/my-posts', label: 'My Posts' },
+        { to: '/dashboard/comments/:id', label: 'My Posts' },
     ];
 
     // Define additional navigation items for admin
