@@ -16,6 +16,9 @@ import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 import CommentReportPage from "../Pages/Dashboard/CommentReportPage/CommentReportPage";
 import ManageUsers from "../Pages/Dashboard/Admin/ManageUsers/ManageUsers";
 import AdminRoutes from "../Routes/Admin/AdminRoutes";
+import AdminProfile from "../Pages/Dashboard/Admin/AdminProfile/AdminProfile";
+import ReportedActivitiesPage from "../Pages/Dashboard/Admin/ReportedActivitiesPage/ReportedActivitiesPage";
+import FallBack from "../Components/FallBack/FallBack";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -24,7 +27,8 @@ export const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home />,
-                loader: () => fetch(`http://localhost:3000/tags`)
+                loader: () => fetch(`http://localhost:3000/tags`),
+                hydrateFallbackElement: <FallBack />
             },
             {
                 path: '/membership',
@@ -109,6 +113,22 @@ export const router = createBrowserRouter([
                 element: (
                     <AdminRoutes>
                         <MakeAnnouncement />
+                    </AdminRoutes>
+                )
+            },
+            {
+                path: 'admin-profile',
+                element: (
+                    <AdminRoutes>
+                        <AdminProfile />
+                    </AdminRoutes>
+                )
+            },
+            {
+                path: 'reported-comments',
+                element: (
+                    <AdminRoutes>
+                        <ReportedActivitiesPage />
                     </AdminRoutes>
                 )
             },

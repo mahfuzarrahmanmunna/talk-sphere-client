@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
+import Swal from 'sweetalert2';  // Import SweetAlert2
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
@@ -20,10 +21,28 @@ const ManageUsers = () => {
 
     const makeAdmin = async (email) => {
         try {
-            await axiosSecure.patch(`users/make-admin/${email}`);
-            fetchUsers(); // Refresh list
+            // SweetAlert confirmation
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to promote this user to Admin?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, promote!',
+                cancelButtonText: 'No, cancel',
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                // Proceed to make the user admin
+                await axiosSecure.patch(`users/make-admin/${email}`);
+                Swal.fire('Success!', 'User has been promoted to Admin.', 'success');
+                fetchUsers(); // Refresh list
+            } else {
+                Swal.fire('Cancelled', 'User was not promoted.', 'info');
+            }
         } catch (error) {
             console.error('Error making admin:', error);
+            Swal.fire('Error', 'Failed to promote user to admin.', 'error');
         }
     };
 

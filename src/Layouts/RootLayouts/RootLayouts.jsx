@@ -10,7 +10,7 @@ const RootLayouts = () => {
         // Simulate loading state (you can replace this with actual async calls)
         const timer = setTimeout(() => {
             setIsLoading(false); // Set loading state to false after the simulated loading
-        }, 2000); // 2 seconds delay, change as per your needs
+        }, 500); // 2 seconds delay, change as per your needs
 
         return () => clearTimeout(timer); // Clean up timeout on unmount
     }, []);

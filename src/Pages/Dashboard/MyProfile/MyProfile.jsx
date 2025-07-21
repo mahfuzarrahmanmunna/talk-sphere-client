@@ -1,32 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { FaMedal } from 'react-icons/fa';
-import useAuth from '../../../Hooks/useAuth';
-import FallBack from '../../../Components/FallBack/FallBack';
+import React, { useEffect, useState } from "react";
+import { FaMedal } from "react-icons/fa";
+import useAuth from "../../../Hooks/useAuth";
+import FallBack from "../../../Components/FallBack/FallBack";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const MyProfile = () => {
     const { user } = useAuth();
     const [posts, setPosts] = useState([]);
     const [dbUser, setDbUser] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPosts, setTotalPosts] = useState(0);
     const { loading } = useAuth();
+    const axiosSecure = useAxiosSecure();
 
     // Fetch user data from DB
     useEffect(() => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/users/${user.email}`)
-                .then(res => setDbUser(res.data))
-                .catch(err => console.error("User fetch failed", err));
+            axiosSecure
+                .get(`users/${user.email}`)
+                .then((res) => setDbUser(res.data))
+                .catch((err) => console.error("User fetch failed", err));
         }
     }, [user]);
 
-    // Fetch latest 3 posts
+    // Fetch latest 5 posts with pagination
     useEffect(() => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/posts?email=${user.email}&limit=3`)
-                .then(res => setPosts(res.data))
-                .catch(err => console.error("Post fetch failed", err));
+            axiosSecure
+                .get(
+                    `posts?email=${user.email}&page=${currentPage}&limit=5&sortBy=popularity`
+                )
+                .then((res) => {
+                    setPosts(res.data);
+                    setTotalPosts(res.data.length); // You should get the count of posts here
+                })
+                .catch((err) => console.error("Post fetch failed", err));
         }
-    }, [user]);
+    }, [user, currentPage]);
 
     const renderBadge = () => {
         if (!dbUser) return null;
@@ -41,8 +51,12 @@ const MyProfile = () => {
         );
     };
 
+    const handlePagination = (page) => {
+        setCurrentPage(page);
+    };
+
     if (loading) {
-        return <FallBack />
+        return <FallBack />;
     }
 
     return (
@@ -50,7 +64,7 @@ const MyProfile = () => {
             {/* Profile Section */}
             <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
                 <img
-                    src={user?.photoURL || 'https://i.ibb.co/ZYW3VTp/brown-brim.png'}
+                    src={user?.photoURL || "https://i.ibb.co/ZYW3VTp/brown-brim.png"}
                     alt="Profile"
                     className="w-28 h-28 rounded-full object-cover border-4 border-primary"
                 />
@@ -66,14 +80,17 @@ const MyProfile = () => {
                 <h3 className="text-xl font-semibold mb-4">📝 My Recent Posts</h3>
                 {posts.length > 0 ? (
                     <div className="space-y-4">
-                        {posts.map(post => (
-                            <div key={post._id} className="border p-4 rounded-md bg-gray-50 shadow-sm">
+                        {posts.map((post) => (
+                            <div
+                                key={post._id}
+                                className="border p-4 rounded-md bg-gray-50 shadow-sm"
+                            >
                                 <h4 className="font-semibold text-lg">{post.title}</h4>
                                 <p className="text-sm text-gray-700 mt-1">
                                     {post.description?.slice(0, 100) || "No content"}...
                                 </p>
                                 <div className="text-xs text-gray-500 mt-2 flex flex-wrap gap-2">
-                                    <span>Tags: {post.tags?.join(', ') || "None"}</span>
+                                    <span>Tags: {post.tags?.join(", ") || "None"}</span>
                                     <span>• {new Date(post.createdAt).toLocaleString()}</span>
                                 </div>
                             </div>
@@ -81,6 +98,25 @@ const MyProfile = () => {
                     </div>
                 ) : (
                     <p className="text-gray-500">No recent posts found.</p>
+                )}
+
+                {/* Pagination Controls */}
+                {totalPosts > 5 && (
+                    <div className="mt-4">
+                        <button
+                            onClick={() => handlePagination(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="btn btn-outline"
+                        >
+                            Prev
+                        </button>
+                        <button
+                            onClick={() => handlePagination(currentPage + 1)}
+                            className="btn btn-outline ml-2"
+                        >
+                            Next
+                        </button>
+                    </div>
                 )}
             </div>
         </div>

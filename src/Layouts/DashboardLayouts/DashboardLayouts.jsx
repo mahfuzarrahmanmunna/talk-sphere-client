@@ -9,7 +9,6 @@ const DashboardLayouts = () => {
     const { user } = useAuth();
     const { role, loading } = useUserRole();
 
-
     // Define navigation items for user
     const userNavItems = [
         { to: '/dashboard/my-profile', label: 'My Profile' },
@@ -32,7 +31,7 @@ const DashboardLayouts = () => {
             {/* Main Content Area */}
             <div className="drawer-content flex flex-col">
                 {/* Mobile Navbar */}
-                <div className="lg:hidden navbar bg-base-200 shadow-md sticky top-0 px-4 justify-between">
+                <div className="lg:hidden navbar bg-base-200 shadow-md sticky top-0 px-4 z-40 justify-between">
                     <Link to="/" className="flex items-center gap-2">
                         <BiLeftArrow size={20} className="text-primary" />
                         <TalkSphereLogo />

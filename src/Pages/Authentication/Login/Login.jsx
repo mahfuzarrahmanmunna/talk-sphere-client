@@ -45,28 +45,39 @@ const Login = () => {
             if (result.user) {
                 const { email, displayName, photoURL } = result.user;
 
-                // Step 3: Define the user's role and badge
-                const userRole = "user"; // Default role for normal users
-                const userBadge = "Bronze"; // Default badge for new users
+                // Step 3: Check if the user exists in the database
+                const existingUser = await axiosSecure.get(`/users/${email}`);
 
-                // Step 4: Send the user data to the backend
-                await axiosSecure.post('/users', {
-                    email,
-                    displayName,
-                    photoURL,
-                    role: userRole,
-                    badge: userBadge,
-                    isMember: false // Setting initial member status to false
-                });
+                // Step 4: If the user does not exist in the database, create a new user
+                if (!existingUser) {
+                    // Step 5: Define the user's role and badge (if this is a new user)
+                    const userRole = "user"; // Default role for normal users
+                    const userBadge = "Bronze"; // Default badge for new users
 
-                // Step 5: Show success message and navigate
-                Swal.fire("Welcome!", "Logged in with Google!", "success");
+                    // Step 6: Send the new user data to the backend
+                    await axiosSecure.post('/users', {
+                        email,
+                        displayName,
+                        photoURL,
+                        role: userRole,
+                        badge: userBadge,
+                        isMember: false // Initial member status
+                    });
+
+                    Swal.fire("Welcome!", "Logged in with Google!", "success");
+                } else {
+                    // Step 7: If user exists, get their existing role (admin or user) and proceed
+                    Swal.fire("Welcome Back!", "Logged in with Google!", "success");
+                }
+
+                // Step 8: Navigate to the home page
                 navigate("/");
             }
         } catch (error) {
             Swal.fire("Oops!", error.message || "Google login failed", "error");
         }
     };
+
 
     return (
         <div
