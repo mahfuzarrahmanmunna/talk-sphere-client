@@ -14,6 +14,7 @@ const MembershipPage = () => {
     const [isPaying, setIsPaying] = useState(false);
     const [isMember, setIsMember] = useState(false);  // Track membership status
     const navigate = useNavigate();
+    const axiosSecure = useAxiosSecure();
 
     const amount = 1;  // Assuming the membership fee is $1
     const amountInCent = amount * 100; // Stripe expects the amount in cents
@@ -22,7 +23,7 @@ const MembershipPage = () => {
     useEffect(() => {
         if (user?.email) {
             // Fetch user membership status from the backend
-            axios.get(`http://localhost:3000/users?email=${user.email}`)
+            axiosSecure.get(`users?email=${user.email}`)
                 .then(res => {
                     setIsMember(res.data.isMember); // Update the membership status based on backend
                 })
@@ -52,7 +53,7 @@ const MembershipPage = () => {
         }
 
         // 2. Create payment intent from backend
-        const res = await axios.post('http://localhost:3000/create-payment-intent', {
+        const res = await axiosSecure.post('create-payment-intent', {
             amountInCent,
             email: user.email,
         });

@@ -3,12 +3,14 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const MakeAnnouncement = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [successMsg, setSuccessMsg] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
     const [uploading, setUploading] = useState(false);
+    const axiosSecure = useAxiosSecure();
 
     useEffect(() => {
         AOS.init({ duration: 1000 });
@@ -33,7 +35,7 @@ const MakeAnnouncement = () => {
                 description: data.description
             };
 
-            const res = await axios.post("http://localhost:3000/announcements", announcement);
+            const res = await axiosSecure.post("announcements", announcement);
             if (res.status === 201) {
                 setSuccessMsg("✅ Announcement posted successfully!");
                 reset();

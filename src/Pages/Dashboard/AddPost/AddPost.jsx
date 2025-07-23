@@ -58,7 +58,7 @@ const AddPost = () => {
 
     // 🔄 Load available tags from backend
     useEffect(() => {
-        axios.get('http://localhost:3000/tags')
+        axiosSecure.get('tags')
             .then(res => {
                 const options = res.data.map(tag => ({
                     label: tag.name,
@@ -67,7 +67,7 @@ const AddPost = () => {
                 setTagOptions(options);
             })
             .catch(err => console.error("Tag fetch error:", err));
-    }, []);
+    }, [axiosSecure]);
 
     //  Submit form handler
     const onSubmit = async (data) => {

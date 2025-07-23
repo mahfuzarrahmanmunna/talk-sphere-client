@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { FaArrowUp, FaArrowDown, FaComments } from 'react-icons/fa';
 import useAuth from '../../../Hooks/useAuth';
 import FallBack from '../../../Components/FallBack/FallBack';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const POSTS_PER_PAGE = 12;
 
@@ -12,6 +13,7 @@ const AllPosts = () => {
     const [page, setPage] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
     const [sortBy, setSortBy] = useState("newest");
+    const axiosSecure = useAxiosSecure();
 
     const { loading } = useAuth();
 
@@ -19,7 +21,7 @@ const AllPosts = () => {
 
     // Fetch the posts
     useEffect(() => {
-        axios.get(`http://localhost:3000/paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}&sortBy=${sortBy}`)
+        axiosSecure.get(`paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}&sortBy=${sortBy}`)
             .then(res => {
                 setPosts(res.data.posts);
                 setTotalPosts(res.data.total);

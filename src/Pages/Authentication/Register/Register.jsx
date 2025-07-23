@@ -5,6 +5,7 @@ import TalkSphereLogo from "../../../Components/TalkSphereLogo/TalkSphereLogo";
 import axios from "axios";
 import useAuth from "../../../Hooks/useAuth";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
@@ -14,6 +15,8 @@ const Register = () => {
     const { createUser, updateUser, setUser } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const axiosSecure = useAxiosSecure();
+
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -55,7 +58,7 @@ const Register = () => {
                 role: "user",
                 isMember: false,
             };
-            await axios.post("http://localhost:3000/users", savedUser);
+            await axiosSecure.post("users", savedUser);
 
             // Success message
             Swal.fire({

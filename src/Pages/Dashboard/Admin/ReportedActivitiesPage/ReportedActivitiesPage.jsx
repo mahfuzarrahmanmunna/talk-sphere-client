@@ -5,23 +5,23 @@ import FallBack from "../../../../Components/FallBack/FallBack";
 
 // Function to fetch reports
 const fetchReports = async (axiosSecure) => {
-    const response = await axiosSecure.get('/reports');
+    const response = await axiosSecure.get('reports');
     return response.data;
 };
 
 // Function to resolve a report
 const resolveReport = async (axiosSecure, reportId) => {
-    await axiosSecure.patch(`/reports/${reportId}`, { status: "resolved" });
+    await axiosSecure.patch(`reports/${reportId}`, { status: "resolved" });
 };
 
 // Function to delete a report
 const deleteReport = async (axiosSecure, reportId) => {
-    await axiosSecure.delete(`/reports/${reportId}`);
+    await axiosSecure.delete(`reports/${reportId}`);
 };
 
 // Function to delete a comment
 const deleteComment = async (axiosSecure, commentId) => {
-    await axiosSecure.delete(`/comments/${commentId}`);
+    await axiosSecure.delete(`comments/${commentId}`);
 };
 
 const ReportedActivitiesPage = () => {

@@ -1,13 +1,14 @@
 // src/components/Header/Header.jsx
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { FaBell } from 'react-icons/fa';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
 const Header = () => {
+    const axiosSecure = useAxiosSecure();
     const { data: count = 0 } = useQuery({
         queryKey: ['announcementCount'],
         queryFn: async () => {
-            const res = await axios.get('http://localhost:3000/announcements/count');
+            const res = await axiosSecure.get('announcements/count');
             return res.data.count;
         }
     });

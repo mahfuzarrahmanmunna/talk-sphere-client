@@ -19,7 +19,7 @@ const MyPosts = () => {
         }
     }, [user]);
 
-    console.log(posts);
+    // console.log(posts);
 
     // Handle Delete
     const handleDelete = async (id) => {

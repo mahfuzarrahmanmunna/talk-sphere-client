@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const ShowTags = ({ setQueryTag, limit = 5 }) => {
     const [tags, setTags] = useState([]);
+    const axiosSecure = useAxiosSecure();
 
     useEffect(() => {
-        fetch('http://localhost:3000/tags')
+        axiosSecure.get('tags')
             .then(res => res.json())
             .then(data => {
                 const sorted = data.slice(0, limit); // Limit to first 5
