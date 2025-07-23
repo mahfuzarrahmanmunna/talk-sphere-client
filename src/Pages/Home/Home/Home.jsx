@@ -5,8 +5,10 @@ import ShowTags from '../ShowTags/ShowTags';
 import WhyChooseUs from '../WhyChoseUs/WhyChoseUs';
 import TagsMarquee from '../TagsMarquee/TagsMarquee';
 import CoreFeatures from '../CoreFeatures/CoreFeatures';
+import usePageTitle from '../../../Hooks/usePageTitle';
 
 const Home = () => {
+    usePageTitle();
     const [queryTag, setQueryTag] = useState(null);
 
     return (

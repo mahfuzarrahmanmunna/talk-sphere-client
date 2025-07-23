@@ -5,8 +5,10 @@ import TalkSphereLogo from "../../../Components/TalkSphereLogo/TalkSphereLogo";
 import useAuth from "../../../Hooks/useAuth";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import usePageTitle from "../../../Hooks/usePageTitle";
 
 const Login = () => {
+    usePageTitle();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { loading, login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();

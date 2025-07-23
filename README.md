@@ -1,4 +1,5 @@
 # TalkSphere - Frontend (Client)
+<img src='https://ibb.co/ZRB89F98' alt='banner'/>
 
 TalkSphere is a modern full-stack web forum application built with the MERN stack, enabling users to post questions, vote, comment, and engage in real-time discussions. The frontend is built using **React**, **Tailwind CSS**, **DaisyUI**, **Firebase Authentication**, and **Framer Motion**, offering a clean and dynamic user experience.
 
