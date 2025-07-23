@@ -23,7 +23,7 @@ const MyProfile = () => {
         }
     }, [user]);
 
-    console.log(dbUser);
+    // console.log(dbUser);
 
     // Fetch latest 5 posts with pagination
     useEffect(() => {

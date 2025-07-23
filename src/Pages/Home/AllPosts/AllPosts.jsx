@@ -46,6 +46,26 @@ const AllPosts = () => {
         return <FallBack />;
     }
 
+    if (posts.length === 0) {
+        return (
+            <div className="col-span-full flex justify-center items-center">
+                <div className="text-center border border-dashed border-gray-300 p-8 rounded-xl bg-base-200 shadow-sm max-w-md">
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+                        alt="No Posts"
+                        className="w-20 h-20 mx-auto mb-4 opacity-60"
+                    />
+                    <h4 className="text-xl font-semibold mb-2 text-gray-700">No Posts Found</h4>
+                    <p className="text-gray-500 text-sm">
+                        It seems there are no forum posts yet. Be the first one to start a discussion!
+                    </p>
+                </div>
+            </div>
+        )
+
+
+    }
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
@@ -94,6 +114,7 @@ const AllPosts = () => {
                     </div>
                 ))}
             </div>
+
 
             {/* Pagination Controls */}
             <div className="flex justify-center mt-10 gap-4 items-center">

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
-import axios from 'axios';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import useAuth from '../../../Hooks/useAuth';
@@ -14,7 +13,7 @@ const AddPost = () => {
     const [userData, setUserData] = useState(null); // New state for user data
     const { user, loading } = useAuth();
     const axiosSecure = useAxiosSecure();
-    console.log(userData);
+    // console.log(userData);
 
     const {
         register,

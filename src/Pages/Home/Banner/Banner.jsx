@@ -6,6 +6,7 @@ import 'swiper/css';
 import 'swiper/css/effect-fade';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import PostCard from '../PostCard/PostCard';
+import FallBack from '../../../Components/FallBack/FallBack';
 // import PostCard from '../../PostCard/PostCard';
 
 const Banner = ({ queryTag, setQueryTag }) => {
@@ -127,9 +128,9 @@ const Banner = ({ queryTag, setQueryTag }) => {
                     </h2>
 
                     {isLoading ? (
-                        <p className="text-center text-lg">Loading posts...</p>
+                        <FallBack />
                     ) : posts.length > 0 ? (
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {posts.map((post, index) => (
                                 <PostCard key={post._id} post={post} index={index} />
                             ))}

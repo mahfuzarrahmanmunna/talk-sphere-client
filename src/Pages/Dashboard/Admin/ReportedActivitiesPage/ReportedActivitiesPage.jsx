@@ -21,7 +21,7 @@ const deleteReport = async (axiosSecure, reportId) => {
 
 // Function to delete a comment
 const deleteComment = async (axiosSecure, commentId) => {
-    await axiosSecure.delete(`comments/${commentId}`);
+    await axiosSecure.delete(`delete-reports/${commentId}`);
 };
 
 const ReportedActivitiesPage = () => {
@@ -142,8 +142,8 @@ const ReportedActivitiesPage = () => {
                             reports.map((report) => (
                                 <tr key={report._id}>
                                     <td>{report.reportedBy || "Unknown"}</td>
-                                    <td>{report.feedback || "Not provided"}</td>
-                                    <td>{report.postTitle || "No title"}</td>
+                                    <td>{report.feedback.slice(0, 15) || "Not provided"}..</td>
+                                    <td>{report.postTitle.slice(0, 15) || "No title"}..</td>
                                     <td>{report.commentText || "No comment"}</td>
                                     <td>
                                         <span className={`badge ${report.status === "resolved" ? "bg-green-500" : "bg-yellow-500"}`}>

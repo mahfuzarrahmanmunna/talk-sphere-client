@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import useAuth from "./useAuth";
 
 const axiosInstance = axios.create({
-    // baseURL: "http://localhost:3000/",
-    baseURL: "https://talk-sphere-server.vercel.app/",
+    baseURL: "http://localhost:3000/",
+    // baseURL: "https://talk-sphere-server.vercel.app/",
     withCredentials: true,
 });
 

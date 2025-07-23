@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router'; 
+import { Link, NavLink } from 'react-router';
 import { FaBars, FaBell } from 'react-icons/fa';
 import TalkSphereLogo from '../TalkSphereLogo/TalkSphereLogo';
 import useAuth from '../../Hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -38,10 +39,28 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await logout();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Logged out!',
+                text: 'You have been successfully logged out.',
+                timer: 2000,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+
         } catch (err) {
             console.error("Logout error:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: "Something went wrong during logout.",
+            });
         }
     };
+
 
     return (
         <div className="navbar bg-base-100 sticky top-0 z-50 shadow-sm px-4 py-3">

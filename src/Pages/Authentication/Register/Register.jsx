@@ -6,17 +6,17 @@ import axios from "axios";
 import useAuth from "../../../Hooks/useAuth";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import { getAuth, updateProfile } from "firebase/auth"; 
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [imageUploading, setImageUploading] = useState(false);
-    const { createUser, updateUser, setUser } = useAuth();
+    const { createUser, setUser } = useAuth(); 
     const navigate = useNavigate();
     const location = useLocation();
     const axiosSecure = useAxiosSecure();
-
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -25,7 +25,7 @@ const Register = () => {
         formData.append("image", imageFile);
 
         try {
-            // Upload image
+            //  Upload image to imgbb
             setImageUploading(true);
             const imgRes = await axios.post(
                 `https://api.imgbb.com/1/upload?key=f2f3f75de26957d089ecdb402788644c`,
@@ -33,23 +33,20 @@ const Register = () => {
             );
             const imageUrl = imgRes.data.data.url;
 
-            // Create user
+            // 👤 Create Firebase Auth user
             await createUser(data.email, data.password);
 
-            // Update Firebase profile
-            await updateUser({
+            //  Update Firebase profile
+            const auth = getAuth();
+            await updateProfile(auth.currentUser, {
                 displayName: data.name,
                 photoURL: imageUrl,
             });
 
-            // Update local context
-            setUser((prevUser) => ({
-                ...prevUser,
-                displayName: data.name,
-                photoURL: imageUrl,
-            }));
+            //  Set updated user in context
+            setUser(auth.currentUser);
 
-            // Save to DB
+            //  Save to your own DB
             const savedUser = {
                 name: data.name,
                 email: data.email,
@@ -58,9 +55,9 @@ const Register = () => {
                 role: "user",
                 isMember: false,
             };
-            await axiosSecure.post("users", savedUser);
+            await axiosSecure.post("/users", savedUser);
 
-            // Success message
+            //  Success Alert
             Swal.fire({
                 position: "center",
                 icon: "success",
