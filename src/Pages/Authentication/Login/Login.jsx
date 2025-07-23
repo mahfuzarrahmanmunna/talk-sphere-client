@@ -33,9 +33,10 @@ const Login = () => {
                     // Send the updated data to backend (only if needed)
                     await axiosSecure.patch('/users', userData);
 
-                    Swal.fire("Success!", "Logged in successfully!", "success");
-                    navigate("/");
+                    
                 }
+                Swal.fire("Success!", "Logged in successfully!", "success");
+                navigate("/");
             }
         } catch (error) {
             Swal.fire("Oops!", error.message || "Login failed", "error");
