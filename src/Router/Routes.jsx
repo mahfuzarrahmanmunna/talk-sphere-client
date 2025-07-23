@@ -19,6 +19,9 @@ import AdminRoutes from "../Routes/Admin/AdminRoutes";
 import AdminProfile from "../Pages/Dashboard/Admin/AdminProfile/AdminProfile";
 import ReportedActivitiesPage from "../Pages/Dashboard/Admin/ReportedActivitiesPage/ReportedActivitiesPage";
 import FallBack from "../Components/FallBack/FallBack";
+import AboutUs from "../Pages/AboutUs/AboutUs";
+import BlogsPage from "../Pages/BlogsPage/BlogsPage";
+import ContactPage from "../Pages/ContactPage/ContactPage";
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -41,7 +44,27 @@ export const router = createBrowserRouter([
             {
                 path: 'post/:id',
                 element: (
-                    <PostDetails />
+                    <PrivateRoutes>
+                        <PostDetails />
+                    </PrivateRoutes>
+                )
+            },
+            {
+                path: 'about',
+                element: (
+                    <AboutUs />
+                )
+            },
+            {
+                path: 'blog',
+                element: (
+                    <BlogsPage />
+                )
+            },
+            {
+                path: 'contact',
+                element: (
+                    <ContactPage />
                 )
             },
 

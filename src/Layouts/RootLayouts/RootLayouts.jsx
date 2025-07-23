@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import { Outlet } from "react-router";
 import FallBack from "../../Components/FallBack/FallBack";
+import Footer from "../../Components/Footer/Footer";
 
 const RootLayouts = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +31,7 @@ const RootLayouts = () => {
             </main>
 
             {/* 🔻 Optional Footer */}
-            {/* <Footer /> */}
+            <Footer />
         </div>
     );
 };
