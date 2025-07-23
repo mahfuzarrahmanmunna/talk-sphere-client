@@ -46,7 +46,7 @@ const Login = () => {
                 const { email, displayName, photoURL } = result.user;
 
                 // Step 3: Check if the user exists in the database
-                const existingUser = await axiosSecure.get(`/users/${email}`);
+                const existingUser = await axiosSecure.get(`users?email=${email}`);
 
                 // Step 4: If the user does not exist in the database, create a new user
                 if (!existingUser) {

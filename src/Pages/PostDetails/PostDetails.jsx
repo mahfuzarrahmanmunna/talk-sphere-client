@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router';
+import { useParams, Link } from 'react-router'; // fixed here from 'react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FaRegThumbsUp, FaRegThumbsDown, FaComments } from 'react-icons/fa';
 import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, WhatsappShareButton, WhatsappIcon } from 'react-share';
+import toast, { Toaster } from 'react-hot-toast';
 import useAuth from '../../Hooks/useAuth';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
@@ -76,9 +77,20 @@ const PostDetails = () => {
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10 bg-white shadow-lg rounded-lg">
+            <Toaster position="top-center" />
             <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">{post.title}</h1>
-                <p className="text-sm text-gray-500">By {post.authorName} • {new Date(post.createdAt).toLocaleString()}</p>
+                <div className="flex items-center gap-4">
+                    <img
+                        src={post.authorImage || 'default-avatar-url'}
+                        alt="author"
+                        className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div>
+                        <p className="text-lg font-semibold">{post.authorName}</p>
+                        <p className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleString()}</p>
+                    </div>
+                </div>
                 <div className="mt-2 text-sm text-blue-500 space-x-2">
                     {post.tags?.map((tag, idx) => (
                         <span key={idx} className="badge badge-outline">#{tag}</span>
@@ -89,12 +101,26 @@ const PostDetails = () => {
             <p className="text-gray-700 leading-relaxed mb-6">{post.description || post.content}</p>
 
             <div className="flex items-center gap-6 border-t pt-4">
-                <button onClick={() => upvoteMutation.mutate()} className="flex items-center gap-2 text-green-600">
+                <button
+                    onClick={() => {
+                        if (!user) return toast.error("Please log in to upvote.");
+                        upvoteMutation.mutate();
+                    }}
+                    className="flex items-center gap-2 text-green-600"
+                >
                     <FaRegThumbsUp /> <span>{post.upVote || 0}</span>
                 </button>
-                <button onClick={() => downvoteMutation.mutate()} className="flex items-center gap-2 text-red-500">
+
+                <button
+                    onClick={() => {
+                        if (!user) return toast.error("Please log in to downvote.");
+                        downvoteMutation.mutate();
+                    }}
+                    className="flex items-center gap-2 text-red-500"
+                >
                     <FaRegThumbsDown /> <span>{post.downVote || 0}</span>
                 </button>
+
                 <span className="flex items-center gap-2 text-blue-600">
                     <FaComments /> <span>{comments.length}</span>
                 </span>

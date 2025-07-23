@@ -10,7 +10,7 @@ const ManageUsers = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axiosSecure.get(`/users?username=${searchQuery}`);
+            const response = await axiosSecure.get(`users?username=${searchQuery}`);
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -34,7 +34,7 @@ const ManageUsers = () => {
 
             if (result.isConfirmed) {
                 // Proceed to make the user admin
-                await axiosSecure.patch(`users/make-admin/${email}`);
+                await axiosSecure.patch(`users/make-admin?email=${email}`);
                 Swal.fire('Success!', 'User has been promoted to Admin.', 'success');
                 fetchUsers(); // Refresh list
             } else {

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import useAuth from '../../../Hooks/useAuth';
 import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const MyPosts = () => {
     const { user } = useAuth();
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
+    const axiosSecure = useAxiosSecure();
 
     // Fetch user-specific posts
     useEffect(() => {
         if (user?.email) {
-            axios.get(`http://localhost:3000/posts?email=${user.email}`)
+            axiosSecure.get(`posts?email=${user.email}`)
                 .then(res => setPosts(res.data))
                 .catch(err => console.error("Failed to fetch posts:", err));
         }
@@ -33,7 +34,7 @@ const MyPosts = () => {
 
         if (confirm.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:3000/posts/${id}`);
+                await axiosSecure.delete(`posts/${id}`);
                 setPosts(posts.filter(post => post._id !== id));
                 Swal.fire('Deleted!', 'Your post has been removed.', 'success');
             } catch (err) {
@@ -46,7 +47,7 @@ const MyPosts = () => {
     // Toggle visibility
     const toggleVisibility = async (id, currentVisibility) => {
         try {
-            await axios.patch(`http://localhost:3000/posts/${id}`, {
+            await axiosSecure.patch(`posts/${id}`, {
                 visibility: currentVisibility === 'Public' ? 'Private' : 'Public'
             });
 

@@ -11,8 +11,10 @@ const AddPost = () => {
     const navigate = useNavigate();
     const [userPostCount, setUserPostCount] = useState(0);
     const [tagOptions, setTagOptions] = useState([]);
+    const [userData, setUserData] = useState(null); // New state for user data
     const { user, loading } = useAuth();
     const axiosSecure = useAxiosSecure();
+    console.log(userData);
 
     const {
         register,
@@ -21,6 +23,28 @@ const AddPost = () => {
         control,
         formState: { errors }
     } = useForm();
+
+    // Fetch user data when the page loads
+    useEffect(() => {
+        // Fetch user data and check if they're a member
+        if (user?.email) {
+            axiosSecure.get(`single-users?email=${user.email}`)
+                .then(response => {
+                    const updatedUser = response.data;
+                    setUserData(updatedUser);
+
+                    // Check if the user is a member and can post more
+                    if (updatedUser.isMember) {
+                        // Allow the user to create more posts without limit
+                        setUserPostCount(0); // Reset post count if they are a member
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching user data:', err);
+                });
+        }
+    }, [user?.email, axiosSecure]);
+
 
     // 🔄 Fetch user's post count
     useEffect(() => {
@@ -77,8 +101,8 @@ const AddPost = () => {
         }
     };
 
-    //  Restrict free users to 5 posts
-    if (userPostCount >= 5 && !user?.isMember) {
+    // Restrict free users to 5 posts, allow unlimited posts for Gold Members
+    if (userData && userPostCount >= 5 && !userData.isMember) {
         return (
             <div className="p-6 text-center bg-base-100 shadow rounded-lg max-w-xl mx-auto mt-10">
                 <h2 className="text-2xl font-bold mb-4 text-error">🚫 Post Limit Reached</h2>

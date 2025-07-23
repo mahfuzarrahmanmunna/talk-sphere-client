@@ -17,12 +17,13 @@ const AllPosts = () => {
 
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
+    // Fetch the posts
     useEffect(() => {
         axios.get(`http://localhost:3000/paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}&sortBy=${sortBy}`)
             .then(res => {
                 setPosts(res.data.posts);
                 setTotalPosts(res.data.total);
-                console.log(res.data.posts);
+                console.log(res.data.posts);  // Log the fetched posts to verify if `commentCount` exists
             })
             .catch(err => console.error('Error fetching paginated posts:', err));
     }, [page, sortBy]);
@@ -37,11 +38,11 @@ const AllPosts = () => {
 
     const handleSortToggle = () => {
         setSortBy(prev => prev === "newest" ? "popularity" : "newest");
-        setPage(1); // Reset to first page when changing sort
+        setPage(1); // Reset to the first page when changing sort
     };
 
     if (loading) {
-        return <FallBack />
+        return <FallBack />;
     }
 
     return (
@@ -86,7 +87,7 @@ const AllPosts = () => {
                                 <FaArrowDown /> {post.downVote}
                             </span>
                             <span className="flex items-center gap-1 text-blue-600">
-                                <FaComments /> {post.commentCount || 0}
+                                <FaComments /> {post.commentCount || 0} {/* Comment count displayed here */}
                             </span>
                         </div>
                     </div>

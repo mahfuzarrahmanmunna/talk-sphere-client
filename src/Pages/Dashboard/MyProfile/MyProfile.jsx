@@ -17,11 +17,13 @@ const MyProfile = () => {
     useEffect(() => {
         if (user?.email) {
             axiosSecure
-                .get(`users/${user.email}`)
+                .get(`users?email=${user.email}`)
                 .then((res) => setDbUser(res.data))
                 .catch((err) => console.error("User fetch failed", err));
         }
     }, [user]);
+
+    console.log(dbUser);
 
     // Fetch latest 5 posts with pagination
     useEffect(() => {
