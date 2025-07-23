@@ -1,12 +1,28 @@
-# React + Vite
+# TalkSphere - Frontend (Client)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TalkSphere is a modern full-stack web forum application built with the MERN stack, enabling users to post questions, vote, comment, and engage in real-time discussions. The frontend is built using **React**, **Tailwind CSS**, **DaisyUI**, **Firebase Authentication**, and **Framer Motion**, offering a clean and dynamic user experience.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Key Features
 
-## Expanding the ESLint configuration
+- 🔐 Firebase Authentication with Email Verification
+- 📝 Post creation with rich metadata (tags, votes, comments)
+- 📊 Real-time voting & view count system
+- 🏷️ Filter by tags, categories, or search queries
+- 🎭 Role-based UI for Admins and Members
+- 🎨 Dark/Light theme toggle
+- 🔍 Server-side search & pagination
+- 📱 Fully responsive UI with modern animations
+- 💬 Contact and Error pages with Lottie animations
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ⚙️ Installation & Setup
+
+> Ensure Node.js and npm are installed.
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/mahfuzarrahmanmunna/talksphere-frontend.git
+   cd talksphere-frontend
