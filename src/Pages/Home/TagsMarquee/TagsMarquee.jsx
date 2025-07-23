@@ -1,13 +1,14 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { FaHashtag } from 'react-icons/fa';
+import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const TagsCardSection = ({ setQueryTag }) => {
+    const axiosSecure = useAxiosSecure();
     const { data: tags = [], isLoading } = useQuery({
         queryKey: ['allTags'],
         queryFn: async () => {
-            const res = await axios.get('http://localhost:3000/tags');
+            const res = await axiosSecure.get('tags');
             return res.data;
         }
     });

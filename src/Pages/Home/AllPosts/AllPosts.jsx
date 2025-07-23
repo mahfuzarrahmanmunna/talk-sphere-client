@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router';
 import { FaArrowUp, FaArrowDown, FaComments } from 'react-icons/fa';
 import useAuth from '../../../Hooks/useAuth';
@@ -25,7 +24,7 @@ const AllPosts = () => {
             .then(res => {
                 setPosts(res.data.posts);
                 setTotalPosts(res.data.total);
-                console.log(res.data.posts);  // Log the fetched posts to verify if `commentCount` exists
+                // console.log(res.data.posts);  
             })
             .catch(err => console.error('Error fetching paginated posts:', err));
     }, [page, sortBy]);

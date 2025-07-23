@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router';
 import useAuth from '../../Hooks/useAuth';
 import FallBack from '../../Components/FallBack/FallBack';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
 const POSTS_PER_PAGE = 10;
 
@@ -14,6 +15,7 @@ const BlogsPage = () => {
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const { loading } = useAuth();
+    const axiosSecure = useAxiosSecure();
 
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
@@ -21,8 +23,8 @@ const BlogsPage = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get(
-                    `http://localhost:3000/paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}&sortBy=${sortBy}&search=${searchTerm}`
+                const response = await axiosSecure.get(
+                    `paginated-posts?page=${page}&limit=${POSTS_PER_PAGE}&sortBy=${sortBy}&search=${searchTerm}`
                 );
                 setPosts(response.data.posts);
                 setTotalPosts(response.data.total);
@@ -38,7 +40,7 @@ const BlogsPage = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/tags');
+                const response = await axiosSecure.get('tags');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -157,7 +159,6 @@ const BlogsPage = () => {
                             {categories.map((category, index) => (
                                 <li key={index} className="mb-2">
                                     <Link
-                                        to={`/category/${category.name}`}
                                         className="text-blue-600 hover:underline"
                                     >
                                         {category.name}

@@ -22,17 +22,20 @@ import FallBack from "../Components/FallBack/FallBack";
 import AboutUs from "../Pages/AboutUs/AboutUs";
 import BlogsPage from "../Pages/BlogsPage/BlogsPage";
 import ContactPage from "../Pages/ContactPage/ContactPage";
+import Forbidden from "../Pages/Forbidden/Forbidden";
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <RootLayouts />, // Main layout (with navbar/footer)
+        errorElement: <Forbidden />,
         children: [
             {
                 path: '/',
                 element: <Home />,
-                loader: () => fetch(`http://localhost:3000/tags`),
+                loader: () => fetch(`https://talk-sphere-server.vercel.app/tags`),
                 hydrateFallbackElement: <FallBack />
             },
+
             {
                 path: '/membership',
                 element: (
@@ -73,6 +76,10 @@ export const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login /> // This page has no navbar/footer
+    },
+    {
+        path: 'forbidden',
+        element: <Forbidden />
     },
     {
         path: "/register",

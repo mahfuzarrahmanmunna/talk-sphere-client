@@ -13,24 +13,27 @@ const Login = () => {
     const axiosSecure = useAxiosSecure();  // Axios hook to make secure API requests
 
     const onSubmit = async (data) => {
-        
+
         try {
             const user = await login(data.email, data.password);
             if (user) {
                 // Check if user needs role or badge update
-                const userData = {
-                    email: data.email,
-                    role: "user",
-                    badge: "Bronze",
-                    isMember: false,
-                    updatedAt: new Date(),
-                };
+                const existingUser = await axiosSecure.get(`users?email=${user?.email}`);
+                if (!existingUser) {
+                    const userData = {
+                        email: data.email,
+                        role: "user",
+                        badge: "Bronze",
+                        isMember: false,
+                        updatedAt: new Date(),
+                    };
 
-                // Send the updated data to backend (only if needed)
-                await axiosSecure.patch('/users', userData);
+                    // Send the updated data to backend (only if needed)
+                    await axiosSecure.patch('/users', userData);
 
-                Swal.fire("Success!", "Logged in successfully!", "success");
-                navigate("/");
+                    Swal.fire("Success!", "Logged in successfully!", "success");
+                    navigate("/");
+                }
             }
         } catch (error) {
             Swal.fire("Oops!", error.message || "Login failed", "error");
