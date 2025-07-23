@@ -12,8 +12,6 @@ const usePageTitle = () => {
         if (path == '/register') document.title = 'Register | Talk Sphere';
         if (path == '/forbidden') document.title = 'Forbidden | Talk Sphere';
         if (path == '/membership') document.title = 'Membership | Talk Sphere';
-
-        if (path == '/privacy') document.title = 'Privacy | Talk Sphere';
         if (path == '/about') document.title = 'About Us | Talk Sphere';
         if (path == '/contact') document.title = 'Contact Us | Talk Sphere';
         if (path == '/blog') document.title = 'Blog | Talk Sphere';

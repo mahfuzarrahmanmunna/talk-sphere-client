@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import lottie from 'lottie-web';
 import { Link } from 'react-router';
 import animationData from '../../assets/forbidden_page.json';
+import usePageTitle from '../../Hooks/usePageTitle';
 
 const Forbidden = () => {
+    usePageTitle();
     const containerRef = useRef(null);
 
     useEffect(() => {

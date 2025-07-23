@@ -6,14 +6,16 @@ import axios from "axios";
 import useAuth from "../../../Hooks/useAuth";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import { getAuth, updateProfile } from "firebase/auth"; 
+import { getAuth, updateProfile } from "firebase/auth";
+import usePageTitle from "../../../Hooks/usePageTitle";
 
 const Register = () => {
+    usePageTitle();
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
     const [loading, setLoading] = useState(false);
     const [showPass, setShowPass] = useState(false);
     const [imageUploading, setImageUploading] = useState(false);
-    const { createUser, setUser } = useAuth(); 
+    const { createUser, setUser } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const axiosSecure = useAxiosSecure();

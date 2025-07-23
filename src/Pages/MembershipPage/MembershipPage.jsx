@@ -1,12 +1,13 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import useAuth from '../../Hooks/useAuth';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import usePageTitle from '../../Hooks/usePageTitle';
 
 const MembershipPage = () => {
+    usePageTitle();
     const stripe = useStripe();
     const elements = useElements();
     const { user } = useAuth();  // Assuming you have user info

@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router';
 import { FaPlusCircle, FaUserEdit, FaClipboardList, FaChartLine, FaUsersCog, FaBullhorn } from 'react-icons/fa';
 import useAuth from '../../../Hooks/useAuth';
 import useUserRole from '../../../Hooks/useUserRole';
+import usePageTitle from '../../../Hooks/usePageTitle';
 
 const DashboardHome = () => {
+    usePageTitle();
     const { user } = useAuth();
     const { role } = useUserRole();
     const navigate = useNavigate();

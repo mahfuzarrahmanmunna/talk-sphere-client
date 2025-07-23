@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router';
 import useAuth from '../../Hooks/useAuth';
 import FallBack from '../../Components/FallBack/FallBack';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import usePageTitle from '../../Hooks/usePageTitle';
 
 const POSTS_PER_PAGE = 10;
 
 const BlogsPage = () => {
+    usePageTitle();
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPosts, setTotalPosts] = useState(0);
