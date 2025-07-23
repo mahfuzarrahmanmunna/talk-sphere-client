@@ -3,8 +3,10 @@ import useAuth from '../../../Hooks/useAuth';
 import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import usePageTitle from '../../../Hooks/usePageTitle';
 
 const MyPosts = () => {
+    usePageTitle();
     const { user } = useAuth();
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
 import Swal from 'sweetalert2';  // Import SweetAlert2
+import usePageTitle from '../../../../Hooks/usePageTitle';
 
 const ManageUsers = () => {
+    usePageTitle();
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const axiosSecure = useAxiosSecure();

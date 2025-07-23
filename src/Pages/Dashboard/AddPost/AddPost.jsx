@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router';
 import useAuth from '../../../Hooks/useAuth';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import FallBack from '../../../Components/FallBack/FallBack';
+import usePageTitle from '../../../Hooks/usePageTitle';
 
 const AddPost = () => {
+    usePageTitle();
     const navigate = useNavigate();
     const [userPostCount, setUserPostCount] = useState(0);
     const [tagOptions, setTagOptions] = useState([]);

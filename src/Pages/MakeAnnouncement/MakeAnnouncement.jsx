@@ -4,8 +4,10 @@ import "aos/dist/aos.css";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import usePageTitle from "../../Hooks/usePageTitle";
 
 const MakeAnnouncement = () => {
+    usePageTitle();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [successMsg, setSuccessMsg] = useState("");
     const [errorMsg, setErrorMsg] = useState("");

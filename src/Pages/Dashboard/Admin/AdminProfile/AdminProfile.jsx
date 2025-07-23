@@ -4,10 +4,12 @@ import { Pie, Line } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LineElement, PointElement, LinearScale } from "chart.js";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useAuth from "../../../../Hooks/useAuth";
+import usePageTitle from "../../../../Hooks/usePageTitle";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LineElement, PointElement, LinearScale);
 
 const AdminProfile = () => {
+    usePageTitle();
     const axiosSecure = useAxiosSecure();
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);

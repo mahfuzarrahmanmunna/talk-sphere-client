@@ -3,8 +3,10 @@ import { FaMedal } from "react-icons/fa";
 import useAuth from "../../../Hooks/useAuth";
 import FallBack from "../../../Components/FallBack/FallBack";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import usePageTitle from "../../../Hooks/usePageTitle";
 
 const MyProfile = () => {
+    usePageTitle();
     const { user } = useAuth();
     const [posts, setPosts] = useState([]);
     const [dbUser, setDbUser] = useState(null);

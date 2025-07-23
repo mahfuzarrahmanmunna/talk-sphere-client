@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import usePageTitle from '../../../Hooks/usePageTitle';
 
 const CommentsPage = () => {
+    usePageTitle();
     const { postId } = useParams();
     const [comments, setComments] = useState([]);
     const axiosSecure = useAxiosSecure();

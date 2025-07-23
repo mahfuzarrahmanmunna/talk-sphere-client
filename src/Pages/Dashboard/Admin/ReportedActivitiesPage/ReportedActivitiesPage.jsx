@@ -2,6 +2,7 @@ import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import FallBack from "../../../../Components/FallBack/FallBack";
+import usePageTitle from "../../../../Hooks/usePageTitle";
 
 // Function to fetch reports
 const fetchReports = async (axiosSecure) => {
@@ -25,6 +26,7 @@ const deleteComment = async (axiosSecure, commentId) => {
 };
 
 const ReportedActivitiesPage = () => {
+    usePageTitle();
     const axiosSecure = useAxiosSecure();
     const queryClient = useQueryClient();
 
