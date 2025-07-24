@@ -102,7 +102,7 @@ const AdminProfile = () => {
             </h2>
 
             {/* Admin Profile Information */}
-            <div className="flex flex-col items-center mb-8 p-6 bg-white rounded-lg shadow-xl transform transition-transform duration-300 hover:scale-105">
+            <div className="flex flex-col items-center mb-8 p-6 bg-white rounded-lg shadow-xl transform transition-transform duration-300 hover:scale-95">
                 <img
                     src={user?.photoURL || "https://i.ibb.co/ZYW3VTp/brown-brim.png"}
                     alt="Admin"

@@ -17,12 +17,12 @@ const resolveReport = async (axiosSecure, reportId) => {
 
 // Function to delete a report
 const deleteReport = async (axiosSecure, reportId) => {
-    await axiosSecure.delete(`reports/${reportId}`);
+    await axiosSecure.delete(`delete-reports/${reportId}`);
 };
 
 // Function to delete a comment
 const deleteComment = async (axiosSecure, commentId) => {
-    await axiosSecure.delete(`delete-reports/${commentId}`);
+    await axiosSecure.delete(`comments/${commentId}`);
 };
 
 const ReportedActivitiesPage = () => {
@@ -153,19 +153,22 @@ const ReportedActivitiesPage = () => {
                                         </span>
                                     </td>
                                     <td>
-                                        <button
-                                            onClick={() => resolveMutation.mutate(report._id)}
-                                            className="btn btn-primary btn-sm mr-2"
-                                        >
-                                            Resolve
-                                        </button>
+                                        {report.status !== "resolved" && (
+                                            <button
+                                                onClick={() => resolveMutation.mutate(report._id)}
+                                                className="btn btn-primary btn-sm mr-2"
+                                            >
+                                                Resolve
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => handleDelete(report._id, report.commentId)}
-                                            className="btn btn-danger btn-sm"
+                                            className="btn btn-error btn-sm"
                                         >
                                             Delete Post
                                         </button>
                                     </td>
+
                                 </tr>
                             ))
                         )}

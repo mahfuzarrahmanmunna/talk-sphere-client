@@ -5,6 +5,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import usePageTitle from "../../Hooks/usePageTitle";
+import useAuth from "../../Hooks/useAuth";
 
 const MakeAnnouncement = () => {
     usePageTitle();
@@ -13,7 +14,7 @@ const MakeAnnouncement = () => {
     const [errorMsg, setErrorMsg] = useState("");
     const [uploading, setUploading] = useState(false);
     const axiosSecure = useAxiosSecure();
-
+    const { user } = useAuth();
     useEffect(() => {
         AOS.init({ duration: 1000 });
     }, []);
@@ -32,7 +33,8 @@ const MakeAnnouncement = () => {
 
             const announcement = {
                 authorName: data.authorName,
-                authorImage: imageUrl,
+                authorImage: user?.photoURL,
+                photo: imageUrl,
                 title: data.title,
                 description: data.description
             };
