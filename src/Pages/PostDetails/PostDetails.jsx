@@ -6,6 +6,7 @@ import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon, Wha
 import toast, { Toaster } from 'react-hot-toast';
 import useAuth from '../../Hooks/useAuth';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
+import FallBack from '../../Components/FallBack/FallBack';
 
 const PostDetails = () => {
     const { id } = useParams();
@@ -72,7 +73,7 @@ const PostDetails = () => {
         }
     });
 
-    if (isLoading) return <div className="text-center mt-10">Loading post...</div>;
+    if (isLoading) return <FallBack />;
     if (isError || !post) return <div className="text-center mt-10 text-red-500">Failed to load post.</div>;
 
     return (

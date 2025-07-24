@@ -5,6 +5,7 @@ import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, Li
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useAuth from "../../../../Hooks/useAuth";
 import usePageTitle from "../../../../Hooks/usePageTitle";
+import FallBack from "../../../../Components/FallBack/FallBack";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LineElement, PointElement, LinearScale);
 
@@ -51,7 +52,7 @@ const AdminProfile = () => {
         }
     };
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <FallBack/>;
     if (error) return <div>Error fetching stats</div>;
 
     const { totalPosts, totalComments, totalUsers } = stats;
