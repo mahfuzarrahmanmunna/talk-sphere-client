@@ -59,11 +59,47 @@ const Navbar = () => {
     };
 
     const links = <>
-        <li><NavLink to="/">Home</NavLink></li>
-        <li><NavLink to="/Membership">Membership</NavLink></li>
-        <li><NavLink to="/blog">Blogs</NavLink></li>
-        <li><NavLink to="/about">About Us</NavLink></li>
-        <li><NavLink to="/contact">Contact Us</NavLink></li>
+        <li>
+            <NavLink
+                to="/"
+                className={({ isActive }) => isActive ? 'text-primary' : ''}
+            >
+                Home
+            </NavLink>
+        </li>
+        <li>
+            <NavLink
+                to="/Membership"
+                className={({ isActive }) => isActive ? 'text-primary' : ''}
+            >
+                Membership
+            </NavLink>
+        </li>
+        <li>
+            <NavLink
+                to="/blog"
+                className={({ isActive }) => isActive ? 'text-primary' : ''}
+            >
+                Blogs
+            </NavLink>
+        </li>
+        <li>
+            <NavLink
+                to="/about"
+                className={({ isActive }) => isActive ? 'text-primary' : ''}
+            >
+                About Us
+            </NavLink>
+        </li>
+        <li>
+            <NavLink
+                to="/contact"
+                className={({ isActive }) => isActive ? 'text-primary' : ''}
+            >
+                Contact Us
+            </NavLink>
+        </li>
+
     </>
 
     return (
