@@ -7,8 +7,6 @@ const PostCard = ({ post, index }) => {
     return (
         <div
             className="bg-base-100 shadow rounded-lg p-5 border hover:shadow-lg transition-all duration-300"
-            data-aos="fade-up"
-            data-aos-delay={index * 100}
         >
             {/* Author Info */}
             <div className="flex items-center gap-3 mb-3">
