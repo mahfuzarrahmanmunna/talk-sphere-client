@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
-import Swal from 'sweetalert2';  // Import SweetAlert2
+import Swal from 'sweetalert2';
 import usePageTitle from '../../../../Hooks/usePageTitle';
 
 const ManageUsers = () => {
@@ -8,14 +8,19 @@ const ManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const axiosSecure = useAxiosSecure();
-    console.log(users);
 
     const fetchUsers = async () => {
         try {
-            const response = await axiosSecure.get(`users?username=${searchQuery}`);
-            setUsers(response.data);
+            const url = searchQuery
+                ? `/users/search?email=${searchQuery}`
+                : '/users/search';
+
+            const response = await axiosSecure.get(url);
+
+            setUsers(Array.isArray(response.data) ? response.data : [response.data]);
         } catch (error) {
             console.error('Error fetching users:', error);
+            setUsers([]);
         }
     };
 
@@ -23,34 +28,30 @@ const ManageUsers = () => {
 
     const makeAdmin = async (email) => {
         try {
-            // SweetAlert confirmation
             const result = await Swal.fire({
-                title: 'Are you sure?',
-                text: 'Do you want to promote this user to Admin?',
+                title: 'Promote this user to Admin?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, promote!',
-                cancelButtonText: 'No, cancel',
-                reverseButtons: true
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
             });
 
             if (result.isConfirmed) {
-                // Proceed to make the user admin
                 await axiosSecure.patch(`users/make-admin?email=${email}`);
-                Swal.fire('Success!', 'User has been promoted to Admin.', 'success');
-                fetchUsers(); // Refresh list
-            } else {
-                Swal.fire('Cancelled', 'User was not promoted.', 'info');
+                Swal.fire('Done!', 'User promoted to Admin.', 'success');
+                fetchUsers();
             }
         } catch (error) {
-            console.error('Error making admin:', error);
-            Swal.fire('Error', 'Failed to promote user to admin.', 'error');
+            console.error('Promotion error:', error);
+            Swal.fire('Error', 'Failed to promote user.', 'error');
         }
     };
 
+    // Load all users on initial render
     useEffect(() => {
         fetchUsers();
-    }, [searchQuery]);
+    }, []);
 
     return (
         <div className="p-6">
@@ -61,7 +62,7 @@ const ManageUsers = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by username"
+                    placeholder="Search by email"
                     className="input input-bordered w-full max-w-xs"
                 />
                 <button onClick={handleSearch} className="btn btn-primary">
@@ -88,7 +89,7 @@ const ManageUsers = () => {
                         ) : (
                             users.map((user) => (
                                 <tr key={user._id}>
-                                    <td>{user.name}</td>
+                                    <td>{user.name || user.displayName || 'N/A'}</td>
                                     <td>{user.email}</td>
                                     <td>{user.role}</td>
                                     <td>{user.isMember ? 'Gold' : 'Bronze'}</td>

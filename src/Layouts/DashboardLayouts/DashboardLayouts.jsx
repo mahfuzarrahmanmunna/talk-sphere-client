@@ -19,6 +19,8 @@ const DashboardLayouts = () => {
     // Define additional navigation items for admin
     const adminNavItems = [
         { to: '/dashboard/admin-profile', label: 'Admin Profile' },
+        { to: '/dashboard/add-post', label: 'Add Post' },
+        { to: '/dashboard/my-posts', label: 'My Posts' },
         { to: '/dashboard/manage-users', label: 'Manage Users' },
         { to: '/dashboard/reported-comments', label: 'Reported Comments/Activities' },
         { to: '/dashboard/make-announcement', label: 'Make Announcement' },
@@ -58,16 +60,7 @@ const DashboardLayouts = () => {
                             <TalkSphereLogo />
                         </Link>
 
-                        {/* User Profile */}
-                        <div className="flex flex-col items-center text-center mb-8">
-                            <img
-                                src={user?.photoURL || '/default-avatar.png'}
-                                alt="Profile"
-                                className="w-20 h-20 rounded-full object-cover border-4 border-primary"
-                            />
-                            <h2 className="text-lg font-bold mt-3">{user?.displayName}</h2>
-                            <p className="text-sm text-gray-500">{user?.email}</p>
-                        </div>
+
 
                         {/* Navigation Menu */}
                         <nav className="space-y-2">
@@ -109,6 +102,16 @@ const DashboardLayouts = () => {
 
                     {/* Footer */}
                     <div className="mt-10 text-center text-xs text-gray-400">
+                        {/* User Profile */}
+                        <div className="flex flex-col items-center text-center mb-8">
+                            <img
+                                src={user?.photoURL || '/default-avatar.png'}
+                                alt="Profile"
+                                className="w-20 h-20 rounded-full object-cover border-4 border-primary"
+                            />
+                            <h2 className="text-lg font-bold mt-3">{user?.displayName}</h2>
+                            <p className="text-sm text-gray-500">{user?.email}</p>
+                        </div>
                         © {new Date().getFullYear()} TalkSphere. All rights reserved.
                     </div>
                 </aside>

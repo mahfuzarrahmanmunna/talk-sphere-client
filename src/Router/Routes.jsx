@@ -47,9 +47,7 @@ export const router = createBrowserRouter([
             {
                 path: 'post/:id',
                 element: (
-                    <PrivateRoutes>
-                        <PostDetails />
-                    </PrivateRoutes>
+                    <PostDetails />
                 )
             },
             {

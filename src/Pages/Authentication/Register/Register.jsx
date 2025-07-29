@@ -50,14 +50,15 @@ const Register = () => {
 
             //  Save to your own DB
             const savedUser = {
-                name: data.name,
+                displayName: data.name,
                 email: data.email,
                 image: imageUrl,
                 badge: "Bronze",
                 role: "user",
                 isMember: false,
             };
-            await axiosSecure.post("/users", savedUser);
+            await axiosSecure.post("users", savedUser);
+            console.log(savedUser);
 
             //  Success Alert
             Swal.fire({
