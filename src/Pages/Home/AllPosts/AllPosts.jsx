@@ -108,7 +108,7 @@ const AllPosts = () => {
                                 <FaArrowDown /> {post.downVote}
                             </span>
                             <span className="flex items-center gap-1 text-blue-600">
-                                <FaComments /> {post.commentCount || 0} {/* Comment count displayed here */}
+                                <FaComments /> {post?.commentCount} {/* Comment count displayed here */}
                             </span>
                         </div>
                     </div>
