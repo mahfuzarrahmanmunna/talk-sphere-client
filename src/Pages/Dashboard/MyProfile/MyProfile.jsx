@@ -14,12 +14,13 @@ const MyProfile = () => {
     const [totalPosts, setTotalPosts] = useState(0);
     const { loading } = useAuth();
     const axiosSecure = useAxiosSecure();
+    console.log(dbUser);
 
     // Fetch user data from DB
     useEffect(() => {
         if (user?.email) {
             axiosSecure
-                .get(`users?email=${user.email}`)
+                .get(`single-users?email=${user.email}`)
                 .then((res) => setDbUser(res.data))
                 .catch((err) => console.error("User fetch failed", err));
         }
