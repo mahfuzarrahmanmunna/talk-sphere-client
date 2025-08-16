@@ -130,7 +130,7 @@ const Banner = ({ queryTag, setQueryTag }) => {
                     {isLoading ? (
                         <FallBack />
                     ) : posts.length > 0 ? (
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="container mx-auto px-4 py-8 mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {posts.map((post, index) => (
                                 <PostCard key={post._id} post={post} index={index} />
                             ))}

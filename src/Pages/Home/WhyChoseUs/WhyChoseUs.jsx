@@ -2,7 +2,7 @@ import React from 'react';
 
 const WhyChooseUs = () => {
     return (
-        <section className="bg-white py-16 px-4 sm:px-6 lg:px-8">
+        <section className="bg-base-300 py-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto text-center">
                 <h2 className="text-4xl font-bold text-gray-800 mb-6">Why Choose Our Platform</h2>
                 <p className="text-lg text-gray-600 mb-12">
