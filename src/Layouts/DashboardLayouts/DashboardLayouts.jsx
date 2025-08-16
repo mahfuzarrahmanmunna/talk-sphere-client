@@ -11,6 +11,7 @@ const DashboardLayouts = () => {
 
     // Define navigation items for user
     const userNavItems = [
+        { to: '/dashboard', label: 'Dashboard' },
         { to: '/dashboard/my-profile', label: 'My Profile' },
         { to: '/dashboard/add-post', label: 'Add Post' },
         { to: '/dashboard/my-posts', label: 'My Posts' },
@@ -18,6 +19,7 @@ const DashboardLayouts = () => {
 
     // Define additional navigation items for admin
     const adminNavItems = [
+        { to: '/dashboard', label: 'Dashboard' },
         { to: '/dashboard/admin-profile', label: 'Admin Profile' },
         { to: '/dashboard/add-post', label: 'Add Post' },
         { to: '/dashboard/my-posts', label: 'My Posts' },
