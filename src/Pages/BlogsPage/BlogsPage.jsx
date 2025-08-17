@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router"; // Make sure you use react-router-dom
 import useAuth from "../../Hooks/useAuth";
 import FallBack from "../../Components/FallBack/FallBack";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import usePageTitle from "../../Hooks/usePageTitle";
 import { motion } from "framer-motion";
 
-const POSTS_PER_PAGE = 10;
+const POSTS_PER_PAGE = 5;
 
 const BlogsPage = () => {
     usePageTitle();
@@ -21,6 +21,7 @@ const BlogsPage = () => {
 
     const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
 
+    // Fetch posts
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -36,6 +37,7 @@ const BlogsPage = () => {
         fetchPosts();
     }, [page, sortBy, searchTerm]);
 
+    // Fetch categories
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -52,7 +54,7 @@ const BlogsPage = () => {
 
     return (
         <div className="relative overflow-hidden">
-            {/* Background Vectors */}
+            {/* Animated Background Vectors */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
                 <motion.div
                     className="absolute w-40 h-40 bg-purple-400/30 rounded-full -top-20 -left-10"
@@ -75,9 +77,11 @@ const BlogsPage = () => {
                     </p>
                 </div>
 
+                {/* Main Layout */}
                 <div className="md:flex gap-8">
                     {/* Main Blog List */}
                     <div className="w-full lg:w-2/3 space-y-8">
+                        {/* Filter Bar */}
                         <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
                             <button
                                 onClick={() => setSortBy(sortBy === "newest" ? "popularity" : "newest")}
@@ -94,6 +98,7 @@ const BlogsPage = () => {
                             />
                         </div>
 
+                        {/* Blog Cards */}
                         {posts.map((post) => (
                             <motion.div
                                 key={post._id}
@@ -160,7 +165,7 @@ const BlogsPage = () => {
 
                     {/* Sidebar */}
                     <div className="w-full lg:w-1/3">
-                        <div className="lg:sticky top-24 space-y-8">
+                        <div className="sticky top-24 space-y-8">
                             {/* Categories */}
                             <div className="bg-white shadow-xl rounded-xl p-6">
                                 <h3 className="text-xl font-semibold mb-4">Categories 📚</h3>

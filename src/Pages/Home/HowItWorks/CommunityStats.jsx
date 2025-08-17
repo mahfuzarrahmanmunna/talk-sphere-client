@@ -44,6 +44,7 @@ const floatingEmojis = [
     { emoji: "🤝", top: "70%", left: "20%" },
     { emoji: "🚀", top: "50%", left: "90%" },
     { emoji: "🔥", top: "80%", left: "60%" },
+    { emoji: "🌟", top: "40%", left: "50%" },
 ];
 
 const CommunityStats = () => {
