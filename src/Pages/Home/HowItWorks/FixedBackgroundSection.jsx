@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 
 const FixedBackgroundSection = () => {
     return (
@@ -21,12 +22,12 @@ const FixedBackgroundSection = () => {
                     Where ideas ignite, voices connect, and global conversations come to life. Join a world of thinkers, doers, and dreamers.
                 </p>
                 <div className="flex flex-col md:flex-row gap-4 justify-center">
-                    <button className="bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-lg font-semibold text-white shadow-md">
+                    <Link to={'/login'} className="bg-blue-600 hover:bg-blue-700 transition px-6 py-3 rounded-lg font-semibold text-white shadow-md">
                         Get Started
-                    </button>
-                    <button className="bg-white/10 hover:bg-white/20 transition px-6 py-3 rounded-lg font-semibold text-white shadow-md">
+                    </Link>
+                    <Link to={'/about'} className="bg-white/10 hover:bg-white/20 transition px-6 py-3 rounded-lg font-semibold text-white shadow-md">
                         Learn More
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>
