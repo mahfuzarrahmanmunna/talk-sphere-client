@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { FaHashtag } from 'react-icons/fa';
+import { FaFire, FaHashtag } from 'react-icons/fa';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 
 const TagsCardSection = ({ setQueryTag }) => {
@@ -18,7 +18,7 @@ const TagsCardSection = ({ setQueryTag }) => {
     return (
         <section className="w-full px-4 py-10 bg-base-100">
             <div className="max-w-6xl mx-auto">
-                <h2 className="text-3xl font-bold text-center mb-8">🔥 Explore Tags</h2>
+                <h2 className="text-3xl font-bold text-center mb-8 flex items-center gap-1 justify-center"><FaFire className='text-yellow-600' /> Explore Tags</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                     {tags.map((tag, i) => (
                         <div
