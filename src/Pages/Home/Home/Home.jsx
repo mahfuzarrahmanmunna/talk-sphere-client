@@ -6,6 +6,7 @@ import WhyChooseUs from '../WhyChoseUs/WhyChoseUs';
 import TagsMarquee from '../TagsMarquee/TagsMarquee';
 import CoreFeatures from '../CoreFeatures/CoreFeatures';
 import usePageTitle from '../../../Hooks/usePageTitle';
+import MarqueeTestimonials from '../MarqueeTestimonials/MarqueeTestimonials';
 
 const Home = () => {
     usePageTitle();
@@ -18,6 +19,7 @@ const Home = () => {
 
             <AllPosts />
             <WhyChooseUs />
+            <MarqueeTestimonials />
             <CoreFeatures />
         </div>
     );
