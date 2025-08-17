@@ -77,7 +77,7 @@ const PostDetails = () => {
     if (isError || !post) return <div className="text-center mt-10 text-red-500">Failed to load post.</div>;
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-10 bg-white shadow-lg rounded-lg">
+        <div className="max-w-4xl mx-auto px-4 py-10 my-10 bg-white shadow-lg rounded-lg">
             <Toaster position="top-center" />
             <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">{post.title}</h1>

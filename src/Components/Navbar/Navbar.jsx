@@ -122,7 +122,7 @@ const Navbar = () => {
             </div>
 
             {/* Center Nav Links */}
-            <div className="navbar-center hidden md:flex">
+            <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1 space-x-4">
                     {links}
                 </ul>
@@ -131,7 +131,7 @@ const Navbar = () => {
             {/* Right: Notification & User */}
             <div className="navbar-end flex items-center  space-x-4">
                 {/* 🔔 Bell + Announcements */}
-                {user && count > 0 && (
+                {user && (
                     <div className="relative">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}

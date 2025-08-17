@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { FaArrowUp, FaArrowDown, FaComments } from 'react-icons/fa';
+import { FaArrowUp, FaArrowDown, FaComments, FaFire } from 'react-icons/fa';
 import useAuth from '../../../Hooks/useAuth';
 import FallBack from '../../../Components/FallBack/FallBack';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
@@ -69,7 +69,7 @@ const AllPosts = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="md:text-3xl text-2xl font-bold">🔥 Forum Posts</h2>
+                <h2 className="md:text-3xl text-2xl font-bold flex gap-1 items-center"><FaFire className='text-yellow-600' /> Forum Posts</h2>
                 <button onClick={handleSortToggle} className="btn btn-sm btn-outline">
                     Sort by: {sortBy === "newest" ? "Newest" : "Popularity"}
                 </button>
